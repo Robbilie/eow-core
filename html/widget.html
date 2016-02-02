@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../js/base.js"></script>
+		<script type="text/javascript" src="../js/widget.js"></script>
+		<link rel="stylesheet" type="text/css" href="../css/index.css">
+	</head>
+	<body>
+		<div id="window">
+			<span class="corner ctl"></span>
+			<span class="corner ctr"></span>
+			<span class="corner cbl"></span>
+			<span class="corner cbr"></span>
+			<nav><span class="wincontrols"><span>&#x2299;</span><span>&minus;</span><span>&times;</span></span></nav>
+			<article></article>
+		</div>
+		<div id="coretemplates">
+			<style id="tab">
+				#tab-${name}:checked ~ nav > label[for="tab-${name}"] { 
+					background-color: rgba(37,37,37,1);
+				}
+				#tab-${name}:checked ~ nav > label[for="tab-${name}"]:after {
+				    content: " ";
+				    position: absolute;
+				    bottom: 0;
+				    left: 5px;
+				    right: 5px;
+				    height: 1px;
+				    background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 50%,rgba(255,255,255,0) 100%);
+				    opacity: 0.5;
+				}
+				#tab-${name}:checked ~ article #${name} {
+					//display: block;
+					visibility: visible;
+				}
+			</style>
+		</div>
+		<div id="templates"></div>
+		<script type="text/javascript">
+
+			var remote = require("remote");
+			var fs = require("fs");
+			var PLUGINDATA;
+			var repo = {};
+
+			window.onload = () => {
+				loadPlugin(location.hash.slice(1));
+			};
+
+			function loadPlugin (url) {
+				var githubName = url.replace("https://github.com/", "").replace(".git", "");
+				var githubToken = "12fc4869231e3cfe9a47a17d9a4ad31a63ee44ab";
+				
+				require('js-github/mixins/github-db')(repo, githubName, githubToken);
+				require('js-git/mixins/create-tree')(repo);
+				require('js-git/mixins/mem-cache')(repo);
+				require('js-git/mixins/read-combiner')(repo);
+				require('js-git/mixins/formats')(repo);
+
+				repo.readRef("refs/heads/master", (err, headHash) => {
+					if(err) {
+						loadOfflinePlugin(githubName)
+					} else {
+						loadOnlinePlugin(githubName, headHash);
+					}
+				});
+			}
+
+			function loadOnlinePlugin (name, hash, cb) {
+				repo.loadAs("commit", hash, (err, commit) => {
+					console.log(commit);
+					repo.loadAs("tree", commit.tree, (err, tree) => {
+						storePlugin(name, tree, () => {
+							console.log("stored");
+							loadOfflinePlugin(name);
+						});
+					});
+				});
+			}
+
+			function storePlugin (name, tree, cb) {
+				try {
+					fs.mkdirSync(`./plugins`);
+				} catch (e) {}
+				try {
+					fs.mkdirSync(`./plugins/${name.split("/")[0]}`);
+				} catch (e) {}
+				try {
+					fs.mkdirSync(`./plugins/${name}`);
+				} catch (e) {}
+
+				var path = `./plugins/${name}/`;
+
+				console.log(tree);
+
+				var store = filename => 
+					repo.loadAs("text", tree[filename].hash, (err, fdata) => {
+						fs.writeFileSync(path + filename, fdata);
+						count--;
+						if(!count) cb();
+					});
+
+				var count = Object.keys(tree).length;
+				for(var i in tree) store(i);
+			}
+
+			function loadOfflinePlugin (name, cb) {
+				var path = `./plugins/${name}/`;
+				PLUGINDATA = JSON.parse(fs.readFileSync(path + "package.json"));
+
+				if(PLUGINDATA.templates) {
+					$("#templates").innerHTML = fs.readFileSync(`${path}${PLUGINDATA.templates}`);
+				}
+				if(PLUGINDATA.css) {
+					var css = document.createElement("link");
+						css.setAttribute("rel", "stylesheet");
+						css.setAttribute("type", "text/css");
+						css.setAttribute("href", `.${path}${PLUGINDATA.css}`);
+					document.head.appendChild(css);
+				}
+
+				if(PLUGINDATA.js) {
+					var js = document.createElement("script");
+						js.setAttribute("type", "text/javascript");
+						js.setAttribute("src", `.${path}${PLUGINDATA.js}`);
+					document.head.appendChild(js);
+				}
+			}
+
+			function status (response) {
+				if (response.status >= 200 && response.status < 300) {
+					return Promise.resolve(response);
+				} else {
+					return Promise.reject(new Error(response.statusText));
+				}
+			}
+
+			function json (response) {
+				return response.json();
+			}
+
+			function text (response) {
+				return response.text();
+			}
+
+		</script>
+	</body>
+</html>

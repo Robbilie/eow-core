@@ -1,0 +1,18 @@
+{
+  "name": "eow",
+  "version": "0.0.1",
+  "description": "Widgets styled like EVE Online",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron --enable-transparent-visuals --disable-gpu main.js"
+  },
+  "author": "Robert Schuh",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "electron-prebuilt": "^0.36.0"
+  },
+  "dependencies": {
+    "js-git": "^0.7.7",
+    "js-github": "^1.0.0"
+  }
+}
