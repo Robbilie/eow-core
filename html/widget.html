@@ -51,7 +51,7 @@
 
 			function loadPlugin (url) {
 				var githubName = url.replace("https://github.com/", "").replace(".git", "");
-				var githubToken = "12fc4869231e3cfe9a47a17d9a4ad31a63ee44ab";
+				var githubToken = JSON.parse(localStorage.getItem("EOWSettings-accesstoken"));
 				
 				require('js-github/mixins/github-db')(repo, githubName, githubToken);
 				require('js-git/mixins/create-tree')(repo);
