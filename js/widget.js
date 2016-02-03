@@ -26,11 +26,12 @@
 			this.isQuitting = false;
 
 			this.bw.removeAllListeners();
+			remote.app.removeAllListeners("before-quit");
 
-			this.bw.on("move", () => this.onMove());
-			this.bw.on("resize", () => this.onResize());
-			this.bw.on("close", () => this.onClose());
-			remote.app.on("before-quit", () => this.isQuitting = true);
+			this.bw.on("move", this.onMove.bind(this));
+			this.bw.on("resize", this.onResize.bind(this));
+			this.bw.on("close", this.onClose.bind(this));
+			remote.app.once("before-quit", this.onQuit.bind(this));
 
 			this.initWidget();
 		}
@@ -58,6 +59,10 @@
 		onClose () {
 			if(!this.isQuitting)
 			Widget.storeData("windows", Widget.loadData("windows").filter(win => win != this.url));
+		}
+
+		onQuit () {
+			this.isQuitting = true;
 		}
 
 		appendChild (el) {
