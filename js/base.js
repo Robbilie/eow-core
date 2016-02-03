@@ -27,6 +27,34 @@
 		element.beforeChildren = function (childs) { childs.map(function (i) { if(i) element.parentNode.insertBefore(i, element); }); return element; };
 		element.clear = function () { element.innerHTML = ""; return element; };
 		element.on = function (listen, cb) { element.addEventListener(listen, cb); return element; };
+		element.$ = function (id) { return element.querySelector(id); };
+		element.$$ = function (id) { return element.querySelectorAll(id); };
 
 		return element;
+	}
+
+	function eowTabs (el, data, tabs) {
+		var id = (Math.random() + "").slice(2);
+		data.className = data.className ? data.className + " tabs" : "tabs";
+
+		var base = eowEl(el, data)
+			.appendChildren(tabs.map(tab => eowEl("style", { innerHTML: Widget.getTemplate("tab").format({ name: tab.name.replace(/ /g, "") }) })))
+			.appendChildren(tabs.map(tab => eowEl("input", { id: "tab-" + tab.name.replace(/ /g, ""), className: "tab-toggle", name: "tab" + id, type: "radio" })))
+			.appendChildren([
+				eowEl("nav")
+					.appendChildren(tabs.map(tab => eowEl("label", { innerHTML: tab.name, htmlFor: "tab-" + tab.name.replace(/ /g, "") }))),
+				eowEl("article")
+					.appendChildren(tabs.map(tab => eowEl("div", { id: "tabcontent-" + tab.name.replace(/ /g, ""), className: "tab", dataset: { name: tab.name } }).appendChildren(tab.content)))
+			]);
+		base.selectTab = name => { 
+			Array.from(base.$$(`:scope > input[name="tab${id}"]`)).map(el => { el.checked = false; });
+			base.$("#tab-" + name.replace(/ /g, "")).checked = true;
+		};
+		base.getTab = name => base.$(":scope > article > tabcontent-" + name.replace(/ /g, ""));
+		base.setTabContent = (name, content) => {
+			eowEl(base.getTab(name), { innerHTML: "" })
+				.appendChildren(content);
+		};
+
+		return base;
 	}

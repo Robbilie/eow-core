@@ -16,9 +16,13 @@
     width: 100%;
     height: 100%;
     box-shadow: 0 0 5px 0px rgba(44,52,58,.5);
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
+}
+
+#winbody {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
 
 * {
@@ -38,44 +42,45 @@ body {
     font-family: EVE Sans Neue;
 }
 
-#window > nav {
-    /* display: block; */
+.tabs {
+    position: relative;
+    height: 100%;
     width: 100%;
-    /* height: 23px; */
-    border-bottom: 1px solid #2d343a;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.tabs > nav {
+    width: 100%;
     background-color: rgba(19,19,19,.25);
     position: relative;
     -webkit-app-region: drag;
-    /* float: left; */
-    /* flex-grow: 1; */
 }
 
-#window > article {
+.tabs > article {
     position: relative;
-    /* top: 0; */
-    /* left: 0; */
-    /* right: 0; */
-    /* bottom: 0; */
+    border-top: 1px solid #2d343a;
     overflow-x: hidden;
     overflow-y: auto;
     overflow: auto;
-    /* clear: both; */
     flex-grow: 1;
 }
 
-#window > article > .tab {
+.tabs > article > .tab {
     position: absolute;
     width: 100%;
     height: 100%;//
     display: none;
     visibility: hidden;
+    overflow-x: hidden;
 }
 
-#window > input {
+.tabs > .tab-toggle {
     display: none;
 }
 
-#window > nav > label {
+.tabs > nav > label {
     display: inline-block;
     line-height: 11px;
     margin: 1px 0px 0px 1px;
@@ -87,7 +92,7 @@ body {
     -webkit-user-select: none;
 }
 
-#window > nav > label:hover { 
+.tabs > nav > label:hover { 
     background-color: rgba(37,37,37,1);
 }
 
@@ -104,11 +109,9 @@ webview {
 }
 
 .wincontrols {
-    /* float: right; */
     font-size: 11px;
     font-family: sans-serif;
     display: block;
-    /* height: 100%; */
     -webkit-app-region: no-drag;
     position: absolute;
     right: 0;

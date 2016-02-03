@@ -15,8 +15,7 @@
 				<span class="corner cbl"></span>
 				<span class="corner cbr"></span>
 			</div>
-			<nav></nav>
-			<article></article>
+			<div id="winbody"></div>
 			<span class="wincontrols"><span>&#x2299;</span><span>&minus;</span><span>&times;</span></span>
 		</div>
 		<div id="coretemplates">
@@ -34,7 +33,7 @@
 				    background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 50%,rgba(255,255,255,0) 100%);
 				    opacity: 0.5;
 				}
-				#tab-${name}:checked ~ article #${name} {
+				#tab-${name}:checked ~ article #tabcontent-${name} {
 					//display: block;
 					visibility: visible;
 				}

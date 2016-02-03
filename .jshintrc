@@ -19,6 +19,7 @@
 		"AutoComplete": true,
 		"refreshDom": 	true,
 		"click": 		true,
-		"PLUGINDATA": 	true
+		"PLUGINDATA": 	true,
+		"Widget": 		true
 	}
 }

@@ -7,15 +7,14 @@
 
 		constructor (options) {
 			this.win 		= $("#window");
-			this.nav 		= $("#window > nav");
-			this.bod 		= $("#window > article");
+			this.controls 	= $("#window > .wincontrols").children;
+			this.bod 		= $("#window > #winbody");
 			this.title 		= options.title || "Undefined Title";
 			this.name 		= PLUGINDATA.title;
 			this.id 		= this.name.replace(/ /g, "");
 			this.width 		= options.width || 200;
 			this.height 	= options.height || 400;
 			this.tabs 		= options.tabs || [this.title];
-			this.controls 	= $("#window > .wincontrols").children;
 
 			this.isPinned = false;
 			this.isMinimized = false;
@@ -23,10 +22,11 @@
 			this.initWidget();
 		}
 
-		initWidget () {
-			this.tabs = this.tabs.map(this.addTab.bind(this));
-			this.selectTab(this.tabs[0].getAttribute("data-name"));
+		appendChild (el) {
+			this.bod.appendChild(el);
+		}
 
+		initWidget () {
 			// pin
 			this.controls[0].addEventListener("click", this.togglePin.bind(this));
 
@@ -37,49 +37,6 @@
 			this.controls[2].addEventListener("click", window.close);
 
 			remote.getCurrentWindow().setSize(this.width, this.height);
-		}
-
-		addTab (name) {
-			var id = name.replace(/ /g, "");
-			var label = document.createElement("label");
-				label.innerHTML = name;
-				label.htmlFor = "tab-" + id;
-				this.nav.appendChild(label);
-
-			var input = document.createElement("input");
-				input.id = "tab-" + id;
-				input.name = "tab";
-				input.setAttribute("type", "radio");
-				this.win.insertBefore(input, this.win.firstChild);
-				
-			var style = document.createElement("style");
-				style.innerHTML = this.getTemplate("tab").format({ name: id });
-				this.win.insertBefore(style, this.win.firstChild);
-
-			var div = document.createElement("div");
-				div.id = id;
-				div.className = "tab";
-				div.setAttribute("data-name", name);
-				this.bod.appendChild(div);
-
-			return div;
-		}
-
-		selectTab (name) {
-			Array.from($$("#window > input")).map(el => { el.checked = false; });
-			$("#window > #tab-" + name).checked = true;
-		}
-
-		getTemplate (name) {
-			var id = name.replace(/ /g, "");
-			return ($("#coretemplates > #" + id) || $("#templates > #" + id)).innerHTML;
-		}
-
-		setTabContent (name, content) {
-			var id = name.replace(/ /g, "");
-			var tab = $("#window > article #" + id);
-				tab.innerHTML = "";
-				tab.appendChild(content);
 		}
 
 		storeData (key, data) {
@@ -118,4 +75,9 @@
 	Widget.initialize = function (options, cb) {
 		var w = new Widget(options);
 		cb(w);
+	};
+
+	Widget.getTemplate = function (name) {
+		var id = name.replace(/ /g, "");
+		return ($("#coretemplates > #" + id) || $("#templates > #" + id)).innerHTML;
 	};
