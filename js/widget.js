@@ -15,7 +15,7 @@
 			this.width 		= options.width || 200;
 			this.height 	= options.height || 400;
 			this.tabs 		= options.tabs || [this.title];
-			this.controls 	= this.nav.firstChild.children;
+			this.controls 	= $("#window > .wincontrols").children;
 
 			this.isPinned = false;
 			this.isMinimized = false;
