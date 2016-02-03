@@ -16,7 +16,7 @@
 				<span class="corner cbr"></span>
 			</div>
 			<div id="winbody"></div>
-			<span class="wincontrols"><span>&#x2299;</span><span>&minus;</span><span>&times;</span></span>
+			<span id="wincontrols"></span>
 		</div>
 		<div id="coretemplates">
 			<style id="tab">
@@ -53,7 +53,7 @@
 
 			function loadPlugin (url) {
 				var githubName = url.replace("https://github.com/", "").replace(".git", "");
-				var githubToken = JSON.parse(localStorage.getItem("EOWSettings-accesstoken"));
+				var githubToken = Widget.loadData("accesstoken");
 				
 				require('js-github/mixins/github-db')(repo, githubName, githubToken);
 				require('js-git/mixins/create-tree')(repo);

@@ -108,7 +108,7 @@ webview {
     width: initial;
 }
 
-.wincontrols {
+#wincontrols {
     font-size: 11px;
     font-family: sans-serif;
     display: block;
@@ -118,7 +118,7 @@ webview {
     top: 0;
 }
 
-.wincontrols > span {
+#wincontrols > span {
     padding: 5px;
     display: block;
     float: left;
@@ -140,7 +140,7 @@ input {
     padding: 5px;
 }
 
-.wincontrols > span,
+#wincontrols > span,
 button {
     cursor: pointer;
 }

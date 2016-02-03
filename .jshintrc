@@ -20,6 +20,7 @@
 		"refreshDom": 	true,
 		"click": 		true,
 		"PLUGINDATA": 	true,
+		"eowEl": 		true,
 		"Widget": 		true
 	}
 }

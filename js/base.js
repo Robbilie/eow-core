@@ -50,7 +50,7 @@
 			Array.from(base.$$(`:scope > input[name="tab${id}"]`)).map(el => { el.checked = false; });
 			base.$("#tab-" + name.replace(/ /g, "")).checked = true;
 		};
-		base.getTab = name => base.$(":scope > article > tabcontent-" + name.replace(/ /g, ""));
+		base.getTab = name => eowEl(base.$(":scope > article > #tabcontent-" + name.replace(/ /g, "")));
 		base.setTabContent = (name, content) => {
 			eowEl(base.getTab(name), { innerHTML: "" })
 				.appendChildren(content);
