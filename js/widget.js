@@ -20,6 +20,9 @@
 			this.bw 		= remote.getCurrentWindow();
 			this.url 		= location.hash.slice(1);
 
+			this.tabs 		= eowTabs("div", {}, []);
+			this.bod.appendChild(this.tabs);
+
 			this.isPinned = false;
 			this.isMinimized = false;
 			this.isMinimizing = false;
@@ -127,8 +130,8 @@
 	}
 
 	Widget.initialize = function (options, cb) {
-		var w = new Widget(options);
-		cb(w);
+		Widget.instance = Widget.instance || new Widget(options);
+		cb(Widget.instance);
 	};
 
 	Widget.getTemplate = function (name) {

@@ -55,6 +55,22 @@
 			eowEl(base.getTab(name), { innerHTML: "" })
 				.appendChildren(content);
 		};
+		base.addTab = (name, content) => {
+			base
+				.getNav()
+				.beforeChildren([
+					eowEl("style", { innerHTML: Widget.getTemplate("tab").format({ name: name.replace(/ /g, "") }) }),
+					eowEl("input", { id: "tab-" + name.replace(/ /g, ""), className: "tab-toggle", name: "tab" + id, type: "radio" })
+				])
+				.appendChild(eowEl("label", { innerHTML: name, htmlFor: "tab-" + name.replace(/ /g, "") }));
+			base
+				.getArticle()
+				.appendChild(
+					eowEl("div", { id: "tabcontent-" + name.replace(/ /g, ""), className: "tab", dataset: { name: name } }).appendChildren([content])
+				);
+		};
+		base.getNav = () => eowEl(base.$(":scope > nav"));
+		base.getArticle = () => eowEl(base.$(":scope > article"));
 
 		return base;
 	}

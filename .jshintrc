@@ -21,6 +21,7 @@
 		"click": 		true,
 		"PLUGINDATA": 	true,
 		"eowEl": 		true,
+		"eowTabs": 		true,
 		"Widget": 		true
 	}
 }
