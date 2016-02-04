@@ -74,9 +74,20 @@
 				repo.loadAs("commit", hash, (err, commit) => {
 					console.log(commit);
 					repo.loadAs("tree", commit.tree, (err, tree) => {
-						storePlugin(name, tree, () => {
-							console.log("stored");
-							loadOfflinePlugin(name);
+						repo.loadAs("text", tree["package.json"].hash, (err, fdata) => {
+							var packagedata = JSON.parse(fdata);
+							var localdata = { version: -1 };
+							if(fs.existsSync(`./plugins/${name}/package.json`)) {
+								localdata = JSON.parse(fs.readFileSync(`./plugins/${name}/package.json`));
+							}
+							if(packagedata.version > localdata.version) {
+								storePlugin(name, tree, () => {
+									console.log("stored");
+									loadOfflinePlugin(name);
+								});
+							} else {
+								loadOfflinePlugin(name);	
+							}
 						});
 					});
 				});
@@ -98,7 +109,7 @@
 				console.log(tree);
 
 				var store = filename => 
-					repo.loadAs("text", tree[filename].hash, (err, fdata) => {
+					repo.loadAs("blob", tree[filename].hash, (err, fdata) => {
 						fs.writeFileSync(path + filename, fdata);
 						count--;
 						if(!count) cb();
