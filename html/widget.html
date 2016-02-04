@@ -46,7 +46,6 @@
 			var remote = require("remote");
 			var fs = require("fs");
 			var PLUGINDATA = {};
-			var repo = {};
 
 			var windowID;
 
@@ -63,6 +62,7 @@
 			};
 
 			function loadPlugin (url) {
+				var repo = {};
 				var githubName = url.replace("https://github.com/", "").replace(".git", "");
 				var githubToken = Widget.loadData("accesstoken");
 				
@@ -76,12 +76,12 @@
 					if(err) {
 						loadOfflinePlugin(url, githubName);
 					} else {
-						loadOnlinePlugin(url, githubName, headHash);
+						loadOnlinePlugin(url, githubName, headHash, repo);
 					}
 				});
 			}
 
-			function loadOnlinePlugin (url, name, hash, cb) {
+			function loadOnlinePlugin (url, name, hash, repo) {
 				repo.loadAs("commit", hash, (err, commit) => {
 					console.log(commit);
 					repo.loadAs("tree", commit.tree, (err, tree) => {
@@ -93,7 +93,7 @@
 							}
 							if(packagedata.version > localdata.version) {
 								console.log("updateing plugin: " + name);
-								storePlugin(name, tree, () => {
+								storePlugin(name, tree, repo, () => {
 									console.log("stored");
 									loadOfflinePlugin(url, name);
 								});
@@ -105,7 +105,7 @@
 				});
 			}
 
-			function storePlugin (name, tree, cb) {
+			function storePlugin (name, tree, repo, cb) {
 				try {
 					fs.mkdirSync(`./plugins`);
 				} catch (e) {}

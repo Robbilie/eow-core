@@ -133,6 +133,8 @@
 		}
 
 		addTab (options, cb) {
+			if(this.getWindowData("urls").indexOf(PLUGINDATA[options.title].url) < 0) this.getWindowData("urls").push(PLUGINDATA[options.title].url);
+			this.saveWidget();
 			cb(this);
 		}
 
