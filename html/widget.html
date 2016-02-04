@@ -34,7 +34,6 @@
 				    opacity: 0.5;
 				}
 				#tab-${name}:checked ~ article #tabcontent-${name} {
-					//display: block;
 					visibility: visible;
 				}
 			</style>
@@ -42,13 +41,25 @@
 		<div id="templates"></div>
 		<script type="text/javascript">
 
+			"use strict";
+
 			var remote = require("remote");
 			var fs = require("fs");
-			var PLUGINDATA;
+			var PLUGINDATA = {};
 			var repo = {};
 
+			var windowID;
+
 			window.onload = () => {
-				loadPlugin(location.hash.slice(1));
+				var widgets = Widget.loadWidgets();
+					windowID = location.hash.slice(1);
+				console.log("WINDOW", windowID, widgets[windowID]);
+				if(windowID && widgets[windowID])
+					Widget.loadWidget(windowID);
+				else
+					Widget.createWidget({ id: "window-settings", urls: ["https://github.com/Robbilie/eow-settings.git"] });
+
+				Widget.instance.getWindowData("urls").map(url => loadPlugin(url));
 			};
 
 			function loadPlugin (url) {
@@ -63,14 +74,14 @@
 
 				repo.readRef("refs/heads/master", (err, headHash) => {
 					if(err) {
-						loadOfflinePlugin(githubName)
+						loadOfflinePlugin(url, githubName);
 					} else {
-						loadOnlinePlugin(githubName, headHash);
+						loadOnlinePlugin(url, githubName, headHash);
 					}
 				});
 			}
 
-			function loadOnlinePlugin (name, hash, cb) {
+			function loadOnlinePlugin (url, name, hash, cb) {
 				repo.loadAs("commit", hash, (err, commit) => {
 					console.log(commit);
 					repo.loadAs("tree", commit.tree, (err, tree) => {
@@ -84,10 +95,10 @@
 								console.log("updateing plugin: " + name);
 								storePlugin(name, tree, () => {
 									console.log("stored");
-									loadOfflinePlugin(name);
+									loadOfflinePlugin(url, name);
 								});
 							} else {
-								loadOfflinePlugin(name);	
+								loadOfflinePlugin(url, name);
 							}
 						});
 					});
@@ -120,25 +131,28 @@
 				for(var i in tree) store(i);
 			}
 
-			function loadOfflinePlugin (name, cb) {
-				var path = `./plugins/${name}/`;
-				PLUGINDATA = JSON.parse(fs.readFileSync(path + "package.json"));
+			function loadOfflinePlugin (url, name) {
+				var path 			= `./plugins/${name}`;
+				var plugin 			= JSON.parse(fs.readFileSync(`${path}/package.json`));
+					plugin.url 		= url;
+					plugin.path 	= path;
+				PLUGINDATA[plugin.title] = plugin;
 
-				if(PLUGINDATA.templates) {
-					$("#templates").innerHTML = fs.readFileSync(`${path}${PLUGINDATA.templates}`);
+				if(plugin.templates) {
+					$("#templates").innerHTML = fs.readFileSync(`${path}/${plugin.templates}`);
 				}
-				if(PLUGINDATA.css) {
+				if(plugin.css) {
 					var css = document.createElement("link");
 						css.setAttribute("rel", "stylesheet");
 						css.setAttribute("type", "text/css");
-						css.setAttribute("href", `.${path}${PLUGINDATA.css}`);
+						css.setAttribute("href", `.${path}/${plugin.css}`);
 					document.head.appendChild(css);
 				}
 
-				if(PLUGINDATA.js) {
+				if(plugin.js) {
 					var js = document.createElement("script");
 						js.setAttribute("type", "text/javascript");
-						js.setAttribute("src", `.${path}${PLUGINDATA.js}`);
+						js.setAttribute("src", `.${path}/${plugin.js}`);
 					document.head.appendChild(js);
 				}
 			}

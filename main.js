@@ -7,7 +7,7 @@
 	// Module to create native browser window.
 	const BrowserWindow = electron.BrowserWindow;
 
-	app.on('ready', () => this.loadWidget("https://github.com/Robbilie/eow-settings.git", true));
+	app.on('ready', () => this.loadWidget("window-settings"));
 
 	// Quit when all windows are closed.
 	app.on('window-all-closed', function () {
@@ -16,10 +16,10 @@
 		}
 	});
 
-	exports.loadWidget = function (url, debugging) {
-		var window = new BrowserWindow({ width: 0, height: 0, transparent: true, frame: false });
-			window.loadURL('file://' + __dirname + '/html/widget.html#' + url);
-			if(true || debugging) window.webContents.openDevTools();
+	exports.loadWidget = function (windowID) {
+		var window = new BrowserWindow({ width: 200, height: 200, transparent: true, frame: false });
+			window.loadURL('file://' + __dirname + '/html/widget.html' + (windowID ? "#" + windowID : ""));
+			window.webContents.openDevTools();
 
 		return window;
 	};
