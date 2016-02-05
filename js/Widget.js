@@ -9,10 +9,13 @@
 		constructor (data) {
 			this.bw 		= remote.getCurrentWindow();
 			this.bodyEl 	= $("#widget > #widgetbody");
-			this.controls 	= [{ ico: "&#x2299;", on: this.togglePin.bind(this) }, { ico: "&minus;", on: this.toggleSize.bind(this) }, { ico: "&times;", on: window.close }];
+			this.controls 	= [
+				{ ico: "&#x2299;", 	on: this.togglePin.bind(this) }, 
+				{ ico: "&minus;", 	on: this.toggleSize.bind(this) }, 
+				{ ico: "&times;", 	on: window.close }];
 			this.widgetEl 	= $("#widget");
 			this.widgetData = data;
-			this.plugins 	= [];
+			this.plugins 	= {};
 
 			this.init();
 		}
@@ -38,7 +41,6 @@
 			this.getWindow().on("move", 	this.onMove.bind(this));
 			this.getWindow().on("resize", 	this.onResize.bind(this));
 			this.getWindow().on("close", 	this.onClose.bind(this));
-			remote.app.on("before-quit", 	this.onQuit.bind(this));
 
 			let controls = $("#widget > #widgetcontrols");
 			this.controls.map(c => controls.appendChild(eowEl("span", { innerHTML: c.ico }).on("click", c.on)));
@@ -49,19 +51,43 @@
 			this.saveWidget();
 		}
 
+		removePlugin (name) {
+			this.setWidgetData("plugins", this.getWidgetData("plugins").filter(p => p != name));
+			delete this.plugins[name];
+			if(Object.keys(this.plugins).length > 0)
+				this.saveWidget();
+			else
+				window.close();
+		}
+
 		loadPlugin (options, cb) {
 			let els = this.getTabs().addTab(options.title, null, options.name);
+				els.label.on("dragend", e => {
+					let windows = remote.require("./main.js").getWindows();
+					Object.keys(windows)
+						.filter(k => k != this.getWidgetData("id"))
+						.map(k => windows[k].webContents.send("checkTab", { 
+							id: this.getWidgetData("id"),
+							x: e.clientX, 
+							y: e.clientY, 
+							name: options.name 
+						}));
+				});
 			let plu = new Plugin(options.name, els, this);
-			this.plugins.push(plu);
+			this.plugins[options.name] = plu;
 			this.getTabs().selectTab(options.title);
 			cb(plu);
+		}
+
+		unloadPlugin (name) {
+			this.plugins[name].unload();
 		}
 
 		toggleSize () {
 			if(this.isMinimized) {
 				this.getWindow().setSize(this.width, this.height);
 			} else {
-				var size = this.getWindow().getSize();
+				let size = this.getWindow().getSize();
 				this.width = size[0];
 				this.height = size[1];
 				this.isMinimizing = true;
@@ -88,7 +114,7 @@
 
 		getWidgetData (key) { 			return key ? this.widgetData[key] : this.widgetData; }
 
-		setWidgetData (key, data) {		if(data != undefined) this.widgetData[key] = data; else this.widgetData = key; }
+		setWidgetData (key, data) {		if(data !== undefined) this.widgetData[key] = data; else this.widgetData = key; }
 
 		saveWidget () { 				Widget.saveWidget(this.getWidgetData()); }
 
@@ -113,8 +139,9 @@
 		}
 
 		onClose () {
-			remote.app.removeListeners("before-quit", this.onClose.bind(this));
-			if(!this.isQuitting) Widget.deleteWidget(this.getWindowData("id"));
+			if(!this.isQuitting) {
+				Widget.deleteWidget(this.getWidgetData("id"));
+			}
 		}
 
 		onQuit () {
@@ -136,9 +163,9 @@
 
 	Widget.loadWidget 		= widgetID 		=> Widget.loadWidgets()[widgetID];
 
-	Widget.saveWidget 		= data 			=> Widget.storeData("widgets", ((d) => { let r = Widget.loadData("widgets"); r[d.id] = d; 		return r; })(data));
+	Widget.saveWidget 		= data 			=> { 	Widget.storeData("widgets", ((d) => { let r = Widget.loadData("widgets"); r[d.id] = d; 		return r; })(data)); return data; };
 
-	Widget.deleteWidget 	= data 			=> Widget.storeData("widgets", ((d) => { let r = Widget.loadData("widgets"); delete r[d.id]; 	return r; })(data));
+	Widget.deleteWidget 	= id 			=> 		Widget.storeData("widgets", ((d) => { let r = Widget.loadData("widgets"); delete r[d]; 		return r; })(id));
 
 	Widget.createWidget 	= options 		=> {
 		let widgets = Widget.loadWidgets();

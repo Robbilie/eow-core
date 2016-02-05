@@ -13,17 +13,26 @@
 		}
 	});
 
-	exports.windows = {};
+	app.on("before-quit", () => Object.keys(windows).map(k => {
+		if(windows[k] && windows[k].webContents)
+			windows[k].webContents.send("before-quit");
+	}));
+
+	const windows = {};
+
+	exports.getWindows = () => windows;
+
 	exports.loadWidget = widgetID => {
-		var window = new BrowserWindow({ width: 200, height: 200, transparent: true, frame: false });
-			window.loadURL(`file://${__dirname}/html/widget.html`);
-			window.webContents.openDevTools();
-			this.windows[widgetID] = window;
+		console.log("Open Widget with id ", widgetID);
+		let window = new BrowserWindow({ width: 200, height: 200, transparent: true, frame: false });
 			window.webContents.on("did-finish-load", () => {
 				window.webContents.send("loadWidget", widgetID);
 			});
-			window.on("closed", () => {
-				delete this.windows[widgetID];
+			window.webContents.on("destroyed", () => {
+				delete windows[widgetID];
 			});
+			window.loadURL(`file://${__dirname}/html/widget.html`);
+			window.webContents.openDevTools();
+			windows[widgetID] = window;
 		return window;
 	};

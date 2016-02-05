@@ -1,17 +1,27 @@
 
 	"use strict";
 
+	var fs 				= require("fs");
+
 	class Plugin {
 
 		constructor (name, elements, widget) {
-			this.name 	= name;
+			this.name 		= name;
 			this.elements 	= elements;
 			this.widget 	= widget;
 		}
 
 		getBody () { return this.elements.article; }
 
+		getElements () { return this.elements; }
+
+		getElement (key) { return this.elements[key]; }
+
 		getWidget () { return this.widget; }
+
+		unload () {
+			Object.keys(this.getElements()).map(k => this.getElement(k).destroy());
+		}
 
 	}
 
