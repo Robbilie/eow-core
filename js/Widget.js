@@ -44,12 +44,15 @@
 			this.controls.map(c => controls.appendChild(eowEl("span", { innerHTML: c.ico }).on("click", c.on)));
 		}
 
-		addPlugin (options, cb) {
+		addPlugin (name) {
+			if(this.getWidgetData("plugins").indexOf(name) < 0) this.getWidgetData("plugins").push(name);
+			this.saveWidget();
+		}
+
+		loadPlugin (options, cb) {
 			let els = this.getTabs().addTab(options.title, null, options.name);
 			let plu = new Plugin(options.name, els, this);
 			this.plugins.push(plu);
-			this.getWidgetData("plugins").push(Widget.PLUGINDATA[options.name].url);
-			this.saveWidget();
 			this.getTabs().selectTab(options.title);
 			cb(plu);
 		}
