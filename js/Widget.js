@@ -130,7 +130,7 @@
 
 	Widget.loadData 		= key 			=> JSON.parse(localStorage.getItem(key));
 
-	Widget.storeData 		= (key, value) 	=> localStorage.setItem(key, JSON.stringify(value));
+	Widget.storeData 		= (key, value) 	=> { localStorage.setItem(key, JSON.stringify(value)); return value; };
 
 	Widget.loadWidgets 		= () 			=> Widget.loadData("widgets") || {};
 
