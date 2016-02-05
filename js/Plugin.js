@@ -3,12 +3,15 @@
 
 	class Plugin {
 
-		constructor (name, elements) {
-			this.name = name;
-			this.elements = elements;
+		constructor (name, elements, widget) {
+			this.name 	= name;
+			this.elements 	= elements;
+			this.widget 	= widget;
 		}
 
 		getBody () { return this.elements.article; }
+
+		getWidget () { return this.widget; }
 
 	}
 

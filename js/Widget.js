@@ -46,10 +46,11 @@
 
 		addPlugin (options, cb) {
 			let els = this.getTabs().addTab(options.title, null, options.name);
-			let plu = new Plugin(options.name, els);
+			let plu = new Plugin(options.name, els, this);
 			this.plugins.push(plu);
-			this.getWidgetData("urls").push(Widget.PLUGINDATA[options.name].url);
+			this.getWidgetData("plugins").push(Widget.PLUGINDATA[options.name].url);
 			this.saveWidget();
+			this.getTabs().selectTab(options.title);
 			cb(plu);
 		}
 
@@ -151,4 +152,8 @@
 			height: 	options.height 	|| 200,
 			plugins: 	options.plugins || []
 		};
+	};
+
+	Widget.getTemplate 		= (title, name) => {
+		return ($(`#coretemplates > #${title}`) || $(`#templates-${name.replace("/", "_")} > #${title}`)).innerHTML;
 	};

@@ -1,6 +1,6 @@
 {
   "name": "eow",
-  "version": "0.1.003",
+  "version": "0.1.004",
   "description": "Widgets styled like EVE Online",
   "main": "main.js",
   "scripts": {
