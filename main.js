@@ -16,7 +16,7 @@
 	exports.windows = {};
 	exports.loadWidget = widgetID => {
 		var window = new BrowserWindow({ width: 200, height: 200, transparent: true, frame: false });
-			window.loadURL(`file://${__dirname}/html/widget2.html`);
+			window.loadURL(`file://${__dirname}/html/widget.html`);
 			window.webContents.openDevTools();
 			this.windows[widgetID] = window;
 			window.webContents.on("did-finish-load", () => {

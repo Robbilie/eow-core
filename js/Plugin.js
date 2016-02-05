@@ -37,7 +37,8 @@
 		let plugin 			= JSON.parse(fs.readFileSync(`${path}/package.json`));
 			plugin.url 		= `https://github.com/${name}.git`;
 			plugin.path 	= path;
-		Widget.PLUGINDATA[plugin.title] = plugin;
+			plugin.name 	= name;
+		Widget.PLUGINDATA[name] = plugin;
 
 		// inject plugin
 		if(plugin.templates)
