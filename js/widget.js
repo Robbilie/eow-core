@@ -22,7 +22,11 @@
 		}
 
 		initWidget () {
-			this.tabs 		= eowTabs("div", {}, []);
+			this.tabs 		= eowTabs("div", {
+				ontabadd: (name, content, title) => {
+					if(title) this.getTabs().getNav().$(`:scope > label[for="tab-${name}"][data-name="${title}"]`).on("dragend", this.onTabDrag.bind(this));
+				}
+			}, []);
 			this.getBodyElement().appendChild(this.tabs);
 
 			this.getWindow().setPosition(
@@ -66,6 +70,13 @@
 			this.getWindow().on("resize", this.onResize.bind(this));
 			this.getWindow().on("close", this.onClose.bind(this));
 			remote.app.on("before-quit", this.onQuit.bind(this));
+
+			Array.from(this.getTabs().getNav().children).map(lab => lab.on("dragend", this.onTabDrag.bind(this)));
+		}
+
+		onTabDrag (e) {
+			var windows = remote.require("./main.js").windows;
+			for(var i in windows) windows[i].webContents.send("plugintabfind", { x: e.clientX, y: e.clientY, url: PLUGINDATA[e.srcElement.getAttribute("data-name")].url });
 		}
 
 		onMove () {

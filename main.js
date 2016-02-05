@@ -1,25 +1,29 @@
 	
-	'use strict';
+	"use strict";
 
-	const electron = require('electron');
-	// Module to control application life.
+	const electron = require("electron");
 	const app = electron.app;
-	// Module to create native browser window.
 	const BrowserWindow = electron.BrowserWindow;
 
-	app.on('ready', () => this.loadWidget("window-settings"));
+	app.on("ready", () => this.loadWidget("widget-settings"));
 
-	// Quit when all windows are closed.
-	app.on('window-all-closed', function () {
-		if (process.platform !== 'darwin') {
+	app.on("window-all-closed", () => {
+		if (process.platform !== "darwin") {
 			app.quit();
 		}
 	});
 
-	exports.loadWidget = function (windowID) {
+	exports.windows = {};
+	exports.loadWidget = widgetID => {
 		var window = new BrowserWindow({ width: 200, height: 200, transparent: true, frame: false });
-			window.loadURL('file://' + __dirname + '/html/widget.html' + (windowID ? "#" + windowID : ""));
+			window.loadURL(`file://${__dirname}/html/widget2.html`);
 			window.webContents.openDevTools();
-
+			this.windows[widgetID] = window;
+			window.webContents.on("did-finish-load", () => {
+				window.webContents.send("loadWidget", widgetID);
+			});
+			window.on("closed", () => {
+				delete this.windows[widgetID];
+			});
 		return window;
 	};

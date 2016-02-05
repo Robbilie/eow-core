@@ -4,19 +4,22 @@
 		<meta charset="UTF-8">
 		<title></title>
 		<script type="text/javascript" src="../js/base.js"></script>
-		<script type="text/javascript" src="../js/widget.js"></script>
+		<script type="text/javascript" src="../js/Main.js"></script>
+		<script type="text/javascript" src="../js/Widget.js"></script>
+		<script type="text/javascript" src="../js/Plugin.js"></script>
+		<script type="text/javascript" src="../js/index.js"></script>
 		<link rel="stylesheet" type="text/css" href="../css/index.css">
 	</head>
 	<body>
-		<div id="window">
+		<div id="widget">
 			<div id="corners">
 				<span class="corner ctl"></span>
 				<span class="corner ctr"></span>
 				<span class="corner cbl"></span>
 				<span class="corner cbr"></span>
 			</div>
-			<div id="winbody"></div>
-			<span id="wincontrols"></span>
+			<div id="widgetbody"></div>
+			<span id="widgetcontrols"></span>
 		</div>
 		<div id="coretemplates">
 			<style id="tab">
@@ -38,141 +41,5 @@
 				}
 			</style>
 		</div>
-		<div id="templates"></div>
-		<script type="text/javascript">
-
-			"use strict";
-
-			var remote = require("remote");
-			var fs = require("fs");
-			var PLUGINDATA = {};
-
-			var windowID;
-
-			window.onload = () => {
-				var widgets = Widget.loadWidgets();
-					windowID = location.hash.slice(1);
-				console.log("WINDOW", windowID, widgets[windowID]);
-				if(windowID && widgets[windowID])
-					Widget.loadWidget(windowID);
-				else
-					Widget.createWidget({ id: "window-settings", urls: ["https://github.com/Robbilie/eow-settings.git"] });
-
-				Widget.instance.getWindowData("urls").map(url => loadPlugin(url));
-			};
-
-			function loadPlugin (url) {
-				var repo = {};
-				var githubName = url.replace("https://github.com/", "").replace(".git", "");
-				var githubToken = Widget.loadData("accesstoken");
-				
-				require('js-github/mixins/github-db')(repo, githubName, githubToken);
-				require('js-git/mixins/create-tree')(repo);
-				require('js-git/mixins/mem-cache')(repo);
-				require('js-git/mixins/read-combiner')(repo);
-				require('js-git/mixins/formats')(repo);
-
-				repo.readRef("refs/heads/master", (err, headHash) => {
-					if(err) {
-						loadOfflinePlugin(url, githubName);
-					} else {
-						loadOnlinePlugin(url, githubName, headHash, repo);
-					}
-				});
-			}
-
-			function loadOnlinePlugin (url, name, hash, repo) {
-				repo.loadAs("commit", hash, (err, commit) => {
-					console.log(commit);
-					repo.loadAs("tree", commit.tree, (err, tree) => {
-						repo.loadAs("text", tree["package.json"].hash, (err, fdata) => {
-							var packagedata = JSON.parse(fdata);
-							var localdata = { version: -1 };
-							if(fs.existsSync(`./plugins/${name}/package.json`)) {
-								localdata = JSON.parse(fs.readFileSync(`./plugins/${name}/package.json`));
-							}
-							if(packagedata.version > localdata.version) {
-								console.log("updateing plugin: " + name);
-								storePlugin(name, tree, repo, () => {
-									console.log("stored");
-									loadOfflinePlugin(url, name);
-								});
-							} else {
-								loadOfflinePlugin(url, name);
-							}
-						});
-					});
-				});
-			}
-
-			function storePlugin (name, tree, repo, cb) {
-				try {
-					fs.mkdirSync(`./plugins`);
-				} catch (e) {}
-				try {
-					fs.mkdirSync(`./plugins/${name.split("/")[0]}`);
-				} catch (e) {}
-				try {
-					fs.mkdirSync(`./plugins/${name}`);
-				} catch (e) {}
-
-				var path = `./plugins/${name}/`;
-
-				console.log(tree);
-
-				var store = filename => 
-					repo.loadAs("blob", tree[filename].hash, (err, fdata) => {
-						fs.writeFileSync(path + filename, fdata);
-						count--;
-						if(!count) cb();
-					});
-
-				var count = Object.keys(tree).length;
-				for(var i in tree) store(i);
-			}
-
-			function loadOfflinePlugin (url, name) {
-				var path 			= `./plugins/${name}`;
-				var plugin 			= JSON.parse(fs.readFileSync(`${path}/package.json`));
-					plugin.url 		= url;
-					plugin.path 	= path;
-				PLUGINDATA[plugin.title] = plugin;
-
-				if(plugin.templates) {
-					$("#templates").innerHTML = fs.readFileSync(`${path}/${plugin.templates}`);
-				}
-				if(plugin.css) {
-					var css = document.createElement("link");
-						css.setAttribute("rel", "stylesheet");
-						css.setAttribute("type", "text/css");
-						css.setAttribute("href", `.${path}/${plugin.css}`);
-					document.head.appendChild(css);
-				}
-
-				if(plugin.js) {
-					var js = document.createElement("script");
-						js.setAttribute("type", "text/javascript");
-						js.setAttribute("src", `.${path}/${plugin.js}`);
-					document.head.appendChild(js);
-				}
-			}
-
-			function status (response) {
-				if (response.status >= 200 && response.status < 300) {
-					return Promise.resolve(response);
-				} else {
-					return Promise.reject(new Error(response.statusText));
-				}
-			}
-
-			function json (response) {
-				return response.json();
-			}
-
-			function text (response) {
-				return response.text();
-			}
-
-		</script>
 	</body>
 </html>

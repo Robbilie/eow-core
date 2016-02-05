@@ -42,7 +42,7 @@
 			.appendChildren(tabs.map(tab => eowEl("input", { id: "tab-" + tab.name.replace(/ /g, ""), className: "tab-toggle", name: "tab" + id, type: "radio" })))
 			.appendChildren([
 				eowEl("nav")
-					.appendChildren(tabs.map(tab => eowEl("label", { innerHTML: tab.name, htmlFor: "tab-" + tab.name.replace(/ /g, "") }))),
+					.appendChildren(tabs.map(tab => eowEl("label", { innerHTML: tab.name, htmlFor: "tab-" + tab.name.replace(/ /g, ""), draggable: !!tab.title }))),
 				eowEl("article")
 					.appendChildren(tabs.map(tab => eowEl("div", { id: "tabcontent-" + tab.name.replace(/ /g, ""), className: "tab", dataset: { name: tab.name } }).appendChildren(tab.content)))
 			]);
@@ -55,22 +55,41 @@
 			eowEl(base.getTab(name), { innerHTML: "" })
 				.appendChildren(content);
 		};
-		base.addTab = (name, content) => {
+		base.addTab = (name, content, title) => {
+			let s = eowEl("style", { innerHTML: Widget.getTemplate("tab").format({ name: name.replace(/ /g, "") }) });
+			let i = eowEl("input", { id: "tab-" + name.replace(/ /g, ""), className: "tab-toggle", name: "tab" + id, type: "radio" });
+			let l = eowEl("label", { innerHTML: name, htmlFor: "tab-" + name.replace(/ /g, ""), draggable: !!title, dataset: { name: title || "" } })
+						.on("dragend", e => console.log(e));
+			let a = eowEl("div", { id: "tabcontent-" + name.replace(/ /g, ""), className: "tab", dataset: { name: name } }).appendChildren([content])
+
 			base
 				.getNav()
 				.beforeChildren([
-					eowEl("style", { innerHTML: Widget.getTemplate("tab").format({ name: name.replace(/ /g, "") }) }),
-					eowEl("input", { id: "tab-" + name.replace(/ /g, ""), className: "tab-toggle", name: "tab" + id, type: "radio" })
+					s,
+					i
 				])
-				.appendChild(eowEl("label", { innerHTML: name, htmlFor: "tab-" + name.replace(/ /g, "") }));
+				.appendChild(
+					l
+				);
 			base
 				.getArticle()
 				.appendChild(
-					eowEl("div", { id: "tabcontent-" + name.replace(/ /g, ""), className: "tab", dataset: { name: name } }).appendChildren([content])
+					a
 				);
+			base.onTabAdd(name, content, title);
+			return {
+				style: s,
+				input: i,
+				label: l,
+				article: a
+			};
+		};
+		base.removeTab = filter => {
+
 		};
 		base.getNav = () => eowEl(base.$(":scope > nav"));
 		base.getArticle = () => eowEl(base.$(":scope > article"));
+		base.onTabAdd = data.ontabadd || function () {};
 
 		return base;
 	}
