@@ -30,19 +30,9 @@
 	ipcRenderer.on("checkTab", (e, message) => {
 		let el = document.elementFromPoint(message.x - Widget.INSTANCE.getWidgetData("x"), message.y - Widget.INSTANCE.getWidgetData("y"));
 		console.log("checkTab", e, message, el);
-		if(el == Widget.INSTANCE.getTabs().getNav()) {
-			console.log("is on tab");
-			let targetID = message.id;
-			message.id = Widget.INSTANCE.getWidgetData("id");
-			remote.require("./main.js").getWindows()[targetID].webContents.send("foundTab", message);
-		}
-	});
-
-	ipcRenderer.on("foundTab", (e, message) => {
-		console.log("foundTab", e, message);
-		Widget.INSTANCE.unloadPlugin(message.name);
-		Widget.INSTANCE.removePlugin(message.name);
-		remote.require("./main.js").getWindows()[message.id].webContents.send("loadPlugin", { name: message.name });
+		let targetID = message.id;
+		message.id = Widget.INSTANCE.getWidgetData("id");
+		remote.require("./main.js").getWindows()[targetID].webContents.send("foundTab", !Widget.INSTANCE.getPlugin(message.name) && el == Widget.INSTANCE.getTabs().getNav(), message);
 	});
 
 	ipcRenderer.on("loadPlugin", (e, message) => {

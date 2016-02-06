@@ -109,6 +109,10 @@ webview {
     width: initial;
 }
 
+body:hover #widgetcontrols {
+    opacity: 1;
+}
+
 #widgetcontrols {
     font-size: 11px;
     font-family: sans-serif;
@@ -117,6 +121,7 @@ webview {
     position: absolute;
     right: 0;
     top: 0;
+    opacity: 0;
 }
 
 #widgetcontrols > span {

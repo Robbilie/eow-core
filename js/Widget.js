@@ -1,7 +1,9 @@
 
 	"use strict";
 
-	var remote = require("remote");
+	var remote 			= require("remote");
+	var electron 		= require("electron");
+	var ipcRenderer 	= electron.ipcRenderer;
 
 	class Widget {
 
@@ -57,24 +59,64 @@
 			if(Object.keys(this.plugins).length > 0)
 				this.saveWidget();
 			else
-				window.close();
+				return window.close();
+			if(!this.getTabs().$(":scope > input:checked")) {
+				this.getPlugin(Object.keys(this.plugins)[0]).getElement("input").checked = true;
+			}
 		}
 
 		loadPlugin (options, cb) {
 			let els = this.getTabs().addTab(options.title, null, options.name);
 				els.label.on("dragend", e => {
 					let windows = remote.require("./main.js").getWindows();
+					var count = Object.keys(windows).length;
+					var foundOnTab = false;
+
+					var cb = (e, found, message) => {
+						console.log("foundTab", e, found, message);
+						if(!foundOnTab && found) {
+							Widget.INSTANCE.unloadPlugin(message.name);
+							Widget.INSTANCE.removePlugin(message.name);
+							remote.require("./main.js").getWindows()[message.id].webContents.send("loadPlugin", { name: message.name });
+						}
+						foundOnTab = foundOnTab || found;
+						count--;
+						if(count === 0) {
+							if(!foundOnTab) {
+								// create new tab
+								Widget.INSTANCE.unloadPlugin(message.name);
+								Widget.INSTANCE.removePlugin(message.name);
+								remote.require("./main.js").loadWidget(
+									Widget.saveWidget(
+										Widget.createWidget({ 
+											x: 		message.x, 
+											y: 		message.y, 
+											width: 	message.width,
+											height: message.height,
+											plugins: [message.name] 
+										})
+									).id
+								);
+							}
+							ipcRenderer.removeListener("foundTab", cb);
+						}
+					};
+					ipcRenderer.on("foundTab", cb);
+
 					Object.keys(windows)
 						.filter(k => k != this.getWidgetData("id"))
 						.map(k => windows[k].webContents.send("checkTab", { 
-							id: this.getWidgetData("id"),
-							x: e.clientX, 
-							y: e.clientY, 
-							name: options.name 
+							id: 	this.getWidgetData("id"),
+							x: 		e.clientX, 
+							y: 		e.clientY, 
+							width: 	this.getWidgetData("width"), 
+							height: this.getWidgetData("height"),
+							name: 	options.name 
 						}));
+
 				});
 			let plu = new Plugin(options.name, els, this);
-			this.plugins[options.name] = plu;
+			this.setPlugin(options.name, plu);
 			this.getTabs().selectTab(options.title);
 			cb(plu);
 		}
@@ -108,6 +150,12 @@
 
 		getTabs () { 					return this.tabs; }
 
+		getPlugins () { 				return this.plugins; }
+
+		getPlugin (name) { 				return this.plugins[name]; }
+
+		setPlugin (name, plugin) { 		this.plugins[name] = plugin; }
+
 		getBodyElement () { 			return this.bodyEl; }
 
 		getWidgetElement () { 			return this.widgetEl; }
@@ -139,7 +187,7 @@
 		}
 
 		onClose () {
-			if(!this.isQuitting) {
+			if(!this.isQuitting && this.getWidgetData("id") != "widget-settings") {
 				Widget.deleteWidget(this.getWidgetData("id"));
 			}
 		}

@@ -60,7 +60,7 @@
 			let i = eowEl("input", { id: "tab-" + name.replace(/ /g, ""), className: "tab-toggle", name: "tab" + id, type: "radio" });
 			let l = eowEl("label", { innerHTML: name, htmlFor: "tab-" + name.replace(/ /g, ""), draggable: !!title, dataset: { name: title || "" } })
 						.on("dragend", e => console.log(e));
-			let a = eowEl("div", { id: "tabcontent-" + name.replace(/ /g, ""), className: "tab", dataset: { name: name } }).appendChildren([content])
+			let a = eowEl("div", { id: "tabcontent-" + name.replace(/ /g, ""), className: "tab", dataset: { name: name } }).appendChildren([content]);
 
 			base
 				.getNav()
