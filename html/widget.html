@@ -9,22 +9,23 @@
 		<script type="text/javascript" src="../js/Plugin.js"></script>
 		<script type="text/javascript" src="../js/index.js"></script>
 		<link rel="stylesheet" type="text/css" href="../css/index.css">
+		<style id="currenttheme"></style>
 	</head>
 	<body>
-		<div id="widget">
+		<div id="widget" class="theme-before-background-secondary">
 			<div id="corners">
 				<span class="corner ctl"></span>
 				<span class="corner ctr"></span>
 				<span class="corner cbl"></span>
 				<span class="corner cbr"></span>
 			</div>
-			<div id="widgetbody"></div>
+			<div id="widgetbody" class="theme-before-saturate-30 theme-before-border-primary"></div>
 			<span id="widgetcontrols"></span>
 		</div>
-		<div id="coretemplates">
-			<style id="tab">
+		<div id="coretemplates" class="templates">
+			<code id="tab">
 				#tab-${name}:checked ~ nav > label[for="tab-${name}"] { 
-					background-color: rgba(37,37,37,1);
+					background-color: ${color};
 				}
 				#tab-${name}:checked ~ nav > label[for="tab-${name}"]:after {
 				    content: " ";
@@ -39,8 +40,8 @@
 				#tab-${name}:checked ~ article #tabcontent-${name} {
 					visibility: visible;
 				}
-			</style>
-			<style id="scrollbar">
+			</code>
+			<pre id="scrollbar">
 				::-webkit-scrollbar {
 				    width: 6px;
 				}
@@ -52,7 +53,50 @@
 				::-webkit-scrollbar-thumb {
 				    background-color: #232323;
 				}
-			</style>
+			</pre>
+			<pre id="theme">
+
+				.theme-element-saturate-30 { 					-webkit-filter: saturate(30%); }
+				.theme-element-background-primary { 			background-color: ${0}; }
+				.theme-element-background-secondary { 			background-color: ${1}; }
+				.theme-element-border-primary { 				border-color: ${0}; }
+				.theme-element-border-secondary { 				border-color: ${1}; }
+
+				.theme-element-hover-saturate-30:hover { 				-webkit-filter: saturate(30%); }
+				.theme-element-hover-background-primary:hover { 		background-color: ${0}; }
+				.theme-element-hover-background-secondary:hover { 		background-color: ${1}; }
+				.theme-element-hover-border-primary:hover { 			border-color: ${0}; }
+				.theme-element-hover-border-secondary:hover { 			border-color: ${1}; }
+
+				.theme-element-checked-saturate-30:checked { 					-webkit-filter: saturate(30%); }
+				.theme-element-checked-background-primary:checked { 			background-color: ${0}; }
+				.theme-element-checked-background-secondary:checked { 			background-color: ${1}; }
+				.theme-element-checked-border-primary:checked { 				border-color: ${0}; }
+				.theme-element-checked-border-secondary:checked { 				border-color: ${1}; }
+
+				.theme-element-saturate-30 { 					-webkit-filter: saturate(30%); }
+				.theme-element-background-primary { 			background-color: ${0}; }
+				.theme-element-background-secondary { 			background-color: ${1}; }
+				.theme-element-border-primary { 				border-color: ${0}; }
+				.theme-element-border-secondary { 				border-color: ${1}; }
+
+				.theme-before-saturate-30:before { 				-webkit-filter: saturate(30%); }
+				.theme-before-background-primary:before { 		background-color: ${0}; }
+				.theme-before-background-secondary:before { 	background-color: ${1}; }
+				.theme-before-border-primary:before { 			border-color: ${0}; }
+				.theme-before-border-secondary:before { 		border-color: ${1}; }
+
+				.theme-after-saturate-30:after { 				-webkit-filter: saturate(30%); }
+				.theme-after-background-primary:after { 		background-color: ${0}; }
+				.theme-after-background-secondary:after { 		background-color: ${1}; }
+				.theme-after-border-primary:after { 			border-color: ${0}; }
+				.theme-after-border-secondary:after { 			border-color: ${1}; }
+
+				::-webkit-scrollbar-thumb {
+					background-color: ${0};
+				}
+
+			</pre>
 		</div>
 	</body>
 </html>

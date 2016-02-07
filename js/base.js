@@ -33,18 +33,24 @@
 		return element;
 	}
 
-	function eowTabs (el, data, tabs) {
+	function eowTabs (data, tabs) {
 		var id = (Math.random() + "").slice(2);
-		data.className = data.className ? data.className + " tabs" : "tabs";
+		data.className = (data.className ? data.className + " " : "") + "tabs";
 
-		var base = eowEl(el, data)
-			.appendChildren(tabs.map(tab => eowEl("style", { innerHTML: Widget.getTemplate("tab").format({ name: tab.name.replace(/ /g, "") }) })))
-			.appendChildren(tabs.map(tab => eowEl("input", { id: "tab-" + tab.name.replace(/ /g, ""), className: "tab-toggle", name: "tab" + id, type: "radio" })))
+		var createStyle 	= name 			=> eowEl("style", { innerHTML: Widget.getTemplate("tab").format({ name: name.replace(/ /g, ""), color: Widget.getCurrentTheme()[0] }) });
+		var createInput 	= name 			=> eowEl("input", { id: "tab-" + name.replace(/ /g, ""), className: "tab-toggle", name: "tab" + id, type: "radio" });
+		var createLabel 	= (name, title) => eowEl("label", { className: "theme-element-background-secondary", innerHTML: name, htmlFor: "tab-" + name.replace(/ /g, ""), draggable: !!title });
+		var createTab 		= name 			=> eowEl("div", { id: "tabcontent-" + name.replace(/ /g, ""), className: "tab", dataset: { name: name } });
+
+		var base = eowEl("div", data)
+			.appendChildren(tabs.map(tab => createStyle(tab.name)))
+			.appendChildren(tabs.map(tab => createInput(tab.name)))
 			.appendChildren([
 				eowEl("nav")
-					.appendChildren(tabs.map(tab => eowEl("label", { innerHTML: tab.name, htmlFor: "tab-" + tab.name.replace(/ /g, ""), draggable: !!tab.title }))),
-				eowEl("article")
-					.appendChildren(tabs.map(tab => eowEl("div", { id: "tabcontent-" + tab.name.replace(/ /g, ""), className: "tab", dataset: { name: tab.name } }).appendChildren(tab.content)))
+					.appendChildren([eowEl("div", { className: "title" })])
+					.appendChildren(tabs.map(tab => createLabel(tab.name, tab.title))),
+				eowEl("article", { className: "theme-element-border-primary" })
+					.appendChildren(tabs.map(tab => createTab(tab.name).appendChildren(tab.content)))
 			]);
 		base.selectTab = name => { 
 			Array.from(base.$$(`:scope > input[name="tab${id}"]`)).map(el => { el.checked = false; });
@@ -56,11 +62,10 @@
 				.appendChildren(content);
 		};
 		base.addTab = (name, content, title) => {
-			let s = eowEl("style", { innerHTML: Widget.getTemplate("tab").format({ name: name.replace(/ /g, "") }) });
-			let i = eowEl("input", { id: "tab-" + name.replace(/ /g, ""), className: "tab-toggle", name: "tab" + id, type: "radio" });
-			let l = eowEl("label", { innerHTML: name, htmlFor: "tab-" + name.replace(/ /g, ""), draggable: !!title, dataset: { name: title || "" } })
-						.on("dragend", e => console.log(e));
-			let a = eowEl("div", { id: "tabcontent-" + name.replace(/ /g, ""), className: "tab", dataset: { name: name } }).appendChildren([content]);
+			let s = createStyle(name);
+			let i = createInput(name);
+			let l = createLabel(name, title);
+			let a = createTab(name).appendChildren([content]);
 
 			base
 				.getNav()
@@ -90,6 +95,22 @@
 		base.getNav = () => eowEl(base.$(":scope > nav"));
 		base.getArticle = () => eowEl(base.$(":scope > article"));
 		base.onTabAdd = data.ontabadd || function () {};
+
+		return base;
+	}
+
+	function eowButton (data) {
+		data.className = (data.className ? data.className + " " : "") + "theme-element-background-primary theme-element-border-primary";
+
+		var base = eowEl("button", data);
+
+		return base;
+	}
+
+	function eowTextfield (data) {
+		data.className = (data.className ? data.className + " " : "") + "theme-element-saturate-30 theme-element-background-primary theme-element-border-primary";
+
+		var base = eowEl("input", data);
 
 		return base;
 	}

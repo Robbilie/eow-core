@@ -1,4 +1,8 @@
 
+/*
+    Globals
+ */
+
 @font-face {
     font-family: EVE Sans Neue;
     src: url("evesansneue-regular.otf") format("opentype");
@@ -8,24 +12,7 @@
     src: url("evesansneue-condensed.otf") format("opentype");
 }
 
-#widget {
-    background-color: #131313;
-    color: #9b9b9b;
-    border: 1px solid #2d343a;
-    position: relative;
-    width: 100%;
-    height: 100%;
-    box-shadow: 0 0 5px 0px rgba(44,52,58,.5);
-}
-
-#widgetbody {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-}
-
-* {
+*, *:before, *:after {
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     -ms-box-sizing: border-box;
@@ -42,6 +29,51 @@ body {
     font-family: EVE Sans Neue;
 }
 
+/*
+    Classes & Elements
+ */
+
+#widget {
+    color: #9b9b9b;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    //box-shadow: 0 0 5px 0px rgba(44,52,58,.5);
+}
+
+#widget:before {
+    content: " ";
+}
+
+#widgetbody {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    padding: 1px;
+}
+
+#widgetbody:before {
+    content: " ";
+    border-style: solid;
+    border-width: 1px;
+}
+
+.templates {
+    display: none;
+}
+
+#widget:before,
+#corners,
+#widgetbody:before,
+.abs-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
 .tabs {
     position: relative;
     height: 100%;
@@ -51,21 +83,14 @@ body {
     flex-wrap: wrap;
 }
 
-.tabs > nav {
-    width: 100%;
-    min-height: 22px;
-    background-color: rgba(19,19,19,.25);
-    position: relative;
-    -webkit-app-region: drag;
-}
-
 .tabs > article {
     position: relative;
-    border-top: 1px solid #2d343a;
     overflow-x: hidden;
     overflow-y: auto;
     overflow: auto;
     flex-grow: 1;
+    border-top-style: solid;
+    border-top-width: 1px;
 }
 
 .tabs > article > .tab {
@@ -81,20 +106,30 @@ body {
     display: none;
 }
 
+.tabs > nav > .title:not(:empty) {
+    display: block;
+    padding: 4px;
+    border-bottom: 1px solid transparent;
+    background-color: rgba(0,0,0,.1);
+}
+
+.tabs > nav {
+    width: 100%;
+    min-height: 22px;
+    position: relative;
+    -webkit-app-region: drag;
+    line-height: 11px;
+    font-size: 11px;
+}
+
 .tabs > nav > label {
     display: inline-block;
-    line-height: 11px;
     margin: 1px 0px 0px 1px;
     position: relative;
     padding: 5px 10px;
-    font-size: 12px;
     -webkit-app-region: no-drag;
     color: white;
     -webkit-user-select: none;
-}
-
-.tabs > nav > label:hover { 
-    background-color: rgba(37,37,37,1);
 }
 
 webview {
@@ -131,7 +166,7 @@ body:hover #widgetcontrols {
 }
 
 .trans {
-    opacity: 0.75;
+    //opacity: 0.75;
 }
 
 input {
@@ -144,6 +179,10 @@ input {
 
 .pad {
     padding: 5px;
+}
+
+.spacer {
+    height: 5px;
 }
 
 #widgetcontrols > span,
@@ -160,19 +199,16 @@ li > p {
 }
 
 button {
-    background-color: #212121;
-    border: 1px solid #2c2c2c;
     color: white;
     text-shadow: 0px 0px 15px black;
     padding: 4px;
+    border-style: solid;
+    border-width: 1px;
+    overflow: hidden;
+    line-height: 14px;
 }
 
 #corners {
-    position: absolute;
-    top: -1px;
-    left: -1px;
-    right: -1px;
-    bottom: -1px;
     overflow: hidden;
 }
 
@@ -240,10 +276,6 @@ button {
  
 ::-webkit-scrollbar-track {
     background-color: rgba(0,0,0,.1);
-}
- 
-::-webkit-scrollbar-thumb {
-    background-color: #232323;
 }
 
 input, button {

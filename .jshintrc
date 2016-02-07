@@ -22,6 +22,7 @@
 		"PLUGINDATA": 	true,
 		"eowEl": 		true,
 		"eowTabs": 		true,
+		"eowButton": 	true,
 		"Widget": 		true,
 		"Plugin": 		true
 	}
