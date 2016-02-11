@@ -6,7 +6,7 @@
 
 	String.prototype.format = function() {
 		var args = arguments;
-		return this.replace(/\${([a-zA-Z\d]+)}/g, function(match, varname) {
+		return this.replace(/\${([a-zA-Z\d\-]+)}/g, function(match, varname) {
 			return typeof args[0] != 'undefined' && typeof args[0][varname] != 'undefined' ? args[0][varname] : "";
 		});
 	};
@@ -37,9 +37,28 @@
 		var id = (Math.random() + "").slice(2);
 		data.className = (data.className ? data.className + " " : "") + "tabs";
 
-		var createStyle 	= name 			=> eowEl("style", { innerHTML: Widget.getTemplate("tab").format({ name: name.replace(/ /g, ""), color: Widget.getCurrentTheme()[0] }) });
+		var styleData = name => {
+			var d = Widget.getCurrentTheme();
+				d.name = name;
+			return d;
+		};
+
+		var createStyle 	= name 			=> {
+			var sty = eowEl("style", { 
+				innerHTML: Widget.getTemplate("tab").format(styleData(name)) 
+			});
+			Object.observe(Widget, (changes) => {
+				changes.forEach(change => {
+					console.log("observed");
+					if(change.name == "currentTheme")
+						sty.innerHTML = Widget.getTemplate("tab").format(styleData(name));
+				});
+			});
+			return sty;
+		};
+
 		var createInput 	= name 			=> eowEl("input", { id: "tab-" + name.replace(/ /g, ""), className: "tab-toggle", name: "tab" + id, type: "radio" });
-		var createLabel 	= (name, title) => eowEl("label", { className: "theme-element-background-secondary", innerHTML: name, htmlFor: "tab-" + name.replace(/ /g, ""), draggable: !!title });
+		var createLabel 	= (name, title) => eowEl("label", { innerHTML: name, htmlFor: "tab-" + name.replace(/ /g, ""), draggable: !!title });
 		var createTab 		= name 			=> eowEl("div", { id: "tabcontent-" + name.replace(/ /g, ""), className: "tab", dataset: { name: name } });
 
 		var base = eowEl("div", data)
@@ -49,7 +68,7 @@
 				eowEl("nav")
 					.appendChildren([eowEl("div", { className: "title" })])
 					.appendChildren(tabs.map(tab => createLabel(tab.name, tab.title))),
-				eowEl("article", { className: "theme-element-border-primary" })
+				eowEl("article")
 					.appendChildren(tabs.map(tab => createTab(tab.name).appendChildren(tab.content)))
 			]);
 		base.selectTab = name => { 
@@ -100,17 +119,48 @@
 	}
 
 	function eowButton (data) {
-		data.className = (data.className ? data.className + " " : "") + "theme-element-background-primary theme-element-border-primary";
-
 		var base = eowEl("button", data);
-
 		return base;
 	}
 
 	function eowTextfield (data) {
-		data.className = (data.className ? data.className + " " : "") + "theme-element-saturate-30 theme-element-background-primary theme-element-border-primary";
-
 		var base = eowEl("input", data);
+		return base;
+	}
+
+	function eowDropdown (data) {
+		var summary = eowEl("summary");
+		var ddbody = eowEl("div", { className: "ddbody" });
+
+		var base = eowEl("details", data);
+			base.classList.add("dropdown");
+			base.appendChildren([
+				summary,
+				ddbody
+			]);
+
+		base.clearOptions = () => {
+			ddbody.clear();
+		};
+
+		base.addOption = name => {
+			var entry = eowEl("div", { innerHTML: name });
+			ddbody.appendChild(entry);
+			entry.addEventListener("click", (e) => {
+				e.stopPropagation();
+				base.setSelected(e.target.innerHTML);
+				base.open = false;
+			});
+		};
+
+		base.setSelected = name => {
+			summary.innerHTML = base.selected = name;
+		};
+
+		base.getSelected = () => base.selected;
+
+		document.addEventListener("click", () => { base.open = false; });
+		base.addEventListener("click", e => e.stopPropagation());
 
 		return base;
 	}

@@ -1,35 +1,5 @@
 
 /*
-    Globals
- */
-
-@font-face {
-    font-family: EVE Sans Neue;
-    src: url("evesansneue-regular.otf") format("opentype");
-}
-@font-face {
-    font-family: EVE Sans Neue Condensed;
-    src: url("evesansneue-condensed.otf") format("opentype");
-}
-
-*, *:before, *:after {
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    -ms-box-sizing: border-box;
-    box-sizing: border-box;
-}
-
-body, html {
-    height: 100%;
-}
-
-body {
-    margin: 0;
-    padding: 5px;
-    font-family: EVE Sans Neue;
-}
-
-/*
     Classes & Elements
  */
 
@@ -38,7 +8,7 @@ body {
     position: relative;
     width: 100%;
     height: 100%;
-    //box-shadow: 0 0 5px 0px rgba(44,52,58,.5);
+    background-color: ${--secondary-color};
 }
 
 #widget:before {
@@ -57,10 +27,8 @@ body {
     content: " ";
     border-style: solid;
     border-width: 1px;
-}
-
-.templates {
-    display: none;
+    border-color: ${--primary-color};
+    -webkit-filter: saturate(30%);
 }
 
 #widget:before,
@@ -91,6 +59,7 @@ body {
     flex-grow: 1;
     border-top-style: solid;
     border-top-width: 1px;
+    border-top-color: ${--primary-color};
 }
 
 .tabs > article > .tab {
@@ -130,6 +99,7 @@ body {
     -webkit-app-region: no-drag;
     color: white;
     -webkit-user-select: none;
+    background-color: ${--secondary-color};
 }
 
 webview {
@@ -170,11 +140,14 @@ body:hover #widgetcontrols {
 }
 
 input {
-    background-color: #111111;
-    border: 1px solid #1b1b1b;
     color: white;
     padding: 4px;
     width: 100%;
+    background-color: ${--primary-color};
+    border-width: 1px;
+    border-style: solid;
+    border-color: ${--primary-color};
+    -webkit-filter: saturate(30%);
 }
 
 .pad {
@@ -186,7 +159,8 @@ input {
 }
 
 #widgetcontrols > span,
-button {
+button,
+.dropdown {
     cursor: pointer;
 }
 
@@ -198,7 +172,8 @@ li > p {
     margin: 0;
 }
 
-button {
+button, select, details {
+    position: relative;
     color: white;
     text-shadow: 0px 0px 15px black;
     padding: 4px;
@@ -206,6 +181,8 @@ button {
     border-width: 1px;
     overflow: hidden;
     line-height: 14px;
+    background-color: ${--primary-color};
+    border-color: ${--primary-color};
 }
 
 #corners {
@@ -278,6 +255,43 @@ button {
     background-color: rgba(0,0,0,.1);
 }
 
-input, button {
+input, button, select, details {
     outline: none;
+}
+
+.dropdown {
+    overflow: initial;
+    user-select: none;
+    font: 13.3333px Arial;
+}
+
+.dropdown > .ddbody {
+    position: absolute;
+    top: calc(100% + 1px);
+    left: -1px;
+    right: -1px;
+    -webkit-filter: saturate(30%);
+    background-color: black;
+    border-width: 1px;
+    border-style: solid;
+    border-color: ${--secondary-color};
+    z-index: 100;
+}
+
+.dropdown > .ddbody > div {
+    background-color: ${--secondary-color};
+    padding: 3px;
+}
+
+.dropdown > .ddbody > div:hover {
+    background-color: ${--primary-color};
+}
+
+.dropdown > summary::-webkit-details-marker {
+    display: none;
+}
+
+.dropdown > summary:after {
+    content: "\25BC";
+    float: right;
 }

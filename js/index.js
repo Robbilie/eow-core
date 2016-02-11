@@ -9,6 +9,9 @@
 	window.onload = e => {
 		if(!Widget.loadData("isInitialized"))
 			initStorage();
+
+		// inject base styling
+		$("#css").innerHTML = fs.readFileSync("./css/index.css").toString();
 	};
 
 	function initStorage () {

@@ -8,24 +8,25 @@
 		<script type="text/javascript" src="../js/Widget.js"></script>
 		<script type="text/javascript" src="../js/Plugin.js"></script>
 		<script type="text/javascript" src="../js/index.js"></script>
-		<link rel="stylesheet" type="text/css" href="../css/index.css">
+		<link rel="stylesheet" type="text/css" href="../css/base.css">
 		<style id="currenttheme"></style>
 	</head>
 	<body>
-		<div id="widget" class="theme-before-background-secondary">
+		<div id="widget">
 			<div id="corners">
 				<span class="corner ctl"></span>
 				<span class="corner ctr"></span>
 				<span class="corner cbl"></span>
 				<span class="corner cbr"></span>
 			</div>
-			<div id="widgetbody" class="theme-before-saturate-30 theme-before-border-primary"></div>
+			<div id="widgetbody"></div>
 			<span id="widgetcontrols"></span>
 		</div>
 		<div id="coretemplates" class="templates">
+			<code id="css"></code>
 			<code id="tab">
 				#tab-${name}:checked ~ nav > label[for="tab-${name}"] { 
-					background-color: ${color};
+					background-color: ${--primary-color};
 				}
 				#tab-${name}:checked ~ nav > label[for="tab-${name}"]:after {
 				    content: " ";

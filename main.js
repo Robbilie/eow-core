@@ -24,7 +24,15 @@
 
 	exports.loadWidget = widgetID => {
 		console.log("Open Widget with id ", widgetID);
-		let window = new BrowserWindow({ width: 200, height: 200, transparent: true, frame: false });
+		let window = new BrowserWindow({ 
+				width: 200, 
+				height: 200, 
+				transparent: true, 
+				frame: false, 
+				webpreferences: {
+					blinkFeatures: "CSSVariables"
+				}
+			});
 			window.webContents.on("did-finish-load", () => {
 				window.webContents.send("loadWidget", widgetID);
 			});

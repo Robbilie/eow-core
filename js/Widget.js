@@ -204,27 +204,27 @@
 	Widget.INSTANCE 		= null;
 	Widget.PLUGINDATA 		= {};
 	Widget.THEMES 			= {
-		Minmatar: 		[[0.4662, 0.3118, 0.2241], 	[0.0679, 0.0718, 0.0736]],
-		Minmatar2: 		[[0.4689, 0.3159, 0.1836], 	[0.058, 0.053, 0.0485]],
-		Amarr: 			[[0.5882, 0.4529, 0.171], 	[0.0061, 0.0049, 0.0045]],
-		Amarr2: 		[[0.6958, 0.5668, 0.2853], 	[0.0303, 0.0187, 0.0226]],
-		Gallente: 		[[0.2117, 0.4556, 0.3905], 	[0.0393, 0.0714, 0.08]],
-		Gallente2: 		[[0.1983, 0.4517, 0.4556], 	[0.065, 0.0736, 0.0723]],
-		Caldari: 		[[0.2823, 0.3898, 0.4926], 	[0.0739, 0.0764, 0.0771]],
-		Caldari2: 		[[0.2773, 0.4002, 0.563], 	[0.0676, 0.0674, 0.0674]],
-		ORE: 			[[0.585, 0.5541, 0.1278], 	[0.044, 0.069, 0.0872]],
-		Guristas: 		[[0.5176, 0.4574, 0.361], 	[0.056, 0.0362, 0.0126]],
-		SanshasNation: 	[[0.3269, 0.3395, 0.1569], 	[0.0605, 0.0593, 0.044]],
-		BloodRaiders: 	[[0.3529, 0.084, 0.0504], 	[0.0363, 0.0232, 0.0174]],
-		AngelCartel: 	[[0.4622, 0.4268, 0.4008], 	[0.057, 0.0315, 0.0205]],
-		Serpentis: 		[[0.2529, 0.3849, 0.2538], 	[0.0459, 0.0459, 0.0459]],
-		SOE: 			[[0.6353, 0.6353, 0.6353], 	[0.0056, 0.0494, 0.047]],
-		MordusLegion: 	[[0.35, 0.3716, 0.4403], 	[0.036, 0.037, 0.0429]],
-		DarkMatter: 	[[0.25, 0.25, 0.25], 		[0.01, 0.01, 0.01]],
-		Carbon: 		[[0.4315, 0.4315, 0.4315], 	[0.0444, 0.0444, 0.0444]],
-		Plasma: 		[[0.088, 0.4377, 0.5722], 	[0.0258, 0.0581, 0.0839]],
-		Radar: 			[[0.2369, 0.3167, 0.2396], 	[0.0246, 0.0433, 0.0332]],
-		Nebula: 		[[0.4186, 0.1506, 0.1171], 	[0.0131, 0.0285, 0.0262]]
+		Minmatar: 		{ "--primary-color": [0.4662, 0.3118, 0.2241], 	"--secondary-color": [0.0679, 0.0718, 0.0736] },
+		Minmatar2: 		{ "--primary-color": [0.4689, 0.3159, 0.1836], 	"--secondary-color": [0.058, 0.053, 0.0485] },
+		Amarr: 			{ "--primary-color": [0.5882, 0.4529, 0.171], 	"--secondary-color": [0.0061, 0.0049, 0.0045] },
+		Amarr2: 		{ "--primary-color": [0.6958, 0.5668, 0.2853], 	"--secondary-color": [0.0303, 0.0187, 0.0226] },
+		Gallente: 		{ "--primary-color": [0.2117, 0.4556, 0.3905], 	"--secondary-color": [0.0393, 0.0714, 0.08] },
+		Gallente2: 		{ "--primary-color": [0.1983, 0.4517, 0.4556], 	"--secondary-color": [0.065, 0.0736, 0.0723] },
+		Caldari: 		{ "--primary-color": [0.2823, 0.3898, 0.4926], 	"--secondary-color": [0.0739, 0.0764, 0.0771] },
+		Caldari2: 		{ "--primary-color": [0.2773, 0.4002, 0.563], 	"--secondary-color": [0.0676, 0.0674, 0.0674] },
+		ORE: 			{ "--primary-color": [0.585, 0.5541, 0.1278], 	"--secondary-color": [0.044, 0.069, 0.0872] },
+		Guristas: 		{ "--primary-color": [0.5176, 0.4574, 0.361], 	"--secondary-color": [0.056, 0.0362, 0.012] },
+		SanshasNation: 	{ "--primary-color": [0.3269, 0.3395, 0.1569], 	"--secondary-color": [0.0605, 0.0593, 0.044] },
+		BloodRaiders: 	{ "--primary-color": [0.3529, 0.084, 0.0504], 	"--secondary-color": [0.0363, 0.0232, 0.0174] },
+		AngelCartel: 	{ "--primary-color": [0.4622, 0.4268, 0.4008], 	"--secondary-color": [0.057, 0.0315, 0.0205] },
+		Serpentis: 		{ "--primary-color": [0.2529, 0.3849, 0.2538], 	"--secondary-color": [0.0459, 0.0459, 0.0459] },
+		SOE: 			{ "--primary-color": [0.6353, 0.6353, 0.6353], 	"--secondary-color": [0.0056, 0.0494, 0.047] },
+		MordusLegion: 	{ "--primary-color": [0.35, 0.3716, 0.4403], 	"--secondary-color": [0.036, 0.037, 0.0429] },
+		DarkMatter: 	{ "--primary-color": [0.25, 0.25, 0.25], 		"--secondary-color": [0.01, 0.01, 0.01] },
+		Carbon: 		{ "--primary-color": [0.4315, 0.4315, 0.4315], 	"--secondary-color": [0.0444, 0.0444, 0.0444] },
+		Plasma: 		{ "--primary-color": [0.088, 0.4377, 0.5722], 	"--secondary-color": [0.0258, 0.0581, 0.0839] },
+		Radar: 			{ "--primary-color": [0.2369, 0.3167, 0.2396], 	"--secondary-color": [0.0246, 0.0433, 0.0332] },
+		Nebula: 		{ "--primary-color": [0.4186, 0.1506, 0.1171], 	"--secondary-color": [0.0131, 0.0285, 0.0262] }
 	};
 
 	Widget.getRandom 		= () 			=> Math.random().toString().slice(2);
@@ -263,16 +263,22 @@
 	};
 
 	Widget.getTheme 		= (id, opacity) => {
-		opacity = opacity || 1;
-		return Widget.THEMES[id].map(theme => `rgba(\$\{0}, \$\{1}, \$\{2}, ${opacity})`.format(theme.map(i => parseInt(i * 255))));
+		opacity = opacity || 0.5;
+		console.log(id, opacity);
+		var theme = {};
+		Object
+			.keys(Widget.THEMES[id])
+			.map(k => { theme[k] = `rgba(\$\{0}, \$\{1}, \$\{2}, ${opacity})`.format(Widget.THEMES[id][k].map(i => parseInt(i * 255))); });
+		return theme;
 	};
 
-	Widget.getCurrentThemeID = () 			=> Widget.currentTheme;
+	Widget.getCurrentThemeID = () 			=> Widget.currentThemeID;
 	Widget.getCurrentOpacity = () 			=> Widget.currentOpacity;
-	Widget.getCurrentTheme 	 = () 			=> Widget.getTheme(Widget.currentTheme, Widget.currentOpacity);
+	Widget.getCurrentTheme 	 = () 			=> Widget.getTheme(Widget.currentThemeID, Widget.currentOpacity);
 
 	Widget.loadTheme 		= (id, opacity) => {
-		Widget.currentTheme 			= id;
+		Widget.currentThemeID 			= id;
 		Widget.currentOpacity 			= opacity;
-		$("#currenttheme").innerHTML 	= Widget.getTemplate("theme").format(Widget.getTheme(id, opacity));
+		Widget.currentTheme 			= Widget.getTheme(id, opacity);
+		$("#currenttheme").innerHTML 	= Widget.getTemplate("css").format(Widget.currentTheme);
 	};
