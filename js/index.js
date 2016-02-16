@@ -1,10 +1,13 @@
 
 	"use strict";
 
+	global.__base 			= __dirname + "/../js/";
+
 	var electron 		= require("electron");
 	var ipcRenderer 	= electron.ipcRenderer;
 	var remote 			= require("remote");
 	var fs 				= require("fs");
+	var LogServer 		= require(__base + "LogServer");
 
 	window.onload = e => {
 		if(!Widget.loadData("isInitialized"))

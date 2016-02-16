@@ -24,6 +24,7 @@
 		"eowTabs": 		true,
 		"eowButton": 	true,
 		"Widget": 		true,
-		"Plugin": 		true
+		"Plugin": 		true,
+		"__base": 		true
 	}
 }
