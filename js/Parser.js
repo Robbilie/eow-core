@@ -3,7 +3,7 @@
 
 	var Marshal 	= require(__base + "Marshal");
 
-	var Parsimmon 	= require("parsimmon");
+	var Parsimmon 	= require(__base + "Parsimmon");
 
 	var regex 		= Parsimmon.regex;
 	var str 		= Parsimmon.string;
