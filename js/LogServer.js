@@ -32,12 +32,14 @@
 		constructor (debug) {
 			this.port = 0xcc9;
 			this.clients = [];
-			this.listeners = {
-				connect: [],
-				init: [],
-				data: [],
-				disconnect: []
-			};
+			/*
+				TYPES
+				- connect
+				- init
+				- character
+				- disconnect
+			 */
+			this.listeners = [];
 
 			this.server = net.createServer(socket => {
 
@@ -116,6 +118,19 @@
 
 							this.distributeMessage("data", socket, socket.nextMessage);
 
+							if(
+								socket.nextMessage.message[0] &&
+								socket.nextMessage.message[0] == "Packet::CallReq" &&
+								socket.nextMessage.message[1] &&
+								socket.nextMessage.message[1].length >= 4 &&
+								socket.nextMessage.message[1][3].length == 4 &&
+								socket.nextMessage.message[1][3][1].length == 1 &&
+								socket.nextMessage.message[1][3][1][0] == "SelectCharacterID"
+							) {
+								socket.characterID = socket.nextMessage.message[1][3][2][0];
+								this.distributeMessage("character", socket);
+							}
+
 							if(socket.writer)
 								socket.writer.write(JSON.stringify(socket.nextMessage, null, 2));
 							delete socket.nextMessage;
@@ -134,15 +149,15 @@
 		}
 
 		distributeMessage (type, socket, msg) {
-			this.listeners[type].forEach(listener => listener(socket, msg));
+			this.listeners.filter(l => l.type == type).forEach(l => l.listener(socket, msg));
 		}
 
 		registerListener (type, listener) {
-			this.listeners[type].push(listener);
+			this.listeners.push({ type: type, listener: listener });
 		}
 
 		removeListener (type, listener) {
-			this.listeners[type] = this.listeners[type].filter(l => l != listener);
+			this.listeners = this.listeners.filter(l => !(l.type == type && l.listener == listener));
 		}
 
 		parseMessage (msg) {

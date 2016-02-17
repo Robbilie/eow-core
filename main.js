@@ -22,22 +22,9 @@
 			windows[k].webContents.send("before-quit");
 	}));
 
-	const ls = new LogServer(false);
+	const ls = new LogServer(true);
 	ls.registerListener("data", (socket, packet) => {
 		console.log(JSON.stringify(packet, null, 2));
-
-		if(
-			packet.message[0] &&
-			packet.message[0] == "Packet::CallReq" &&
-			packet.message[1] &&
-			packet.message[1].length >= 4 &&
-			packet.message[1][3].length == 4 &&
-			packet.message[1][3][1].length == 1 &&
-			packet.message[1][3][1][0] == "SelectCharacterID"
-		) {
-			socket.characterID = packet.message[1][3][2][0];
-		}
-
 	});
 
 	exports.logServer = {

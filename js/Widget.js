@@ -202,9 +202,9 @@
 
 	}
 
-	Widget.INSTANCE 		= null;
-	Widget.PLUGINDATA 		= {};
-	Widget.THEMES 			= {
+	Widget.INSTANCE 			= null;
+	Widget.PLUGINDATA 			= {};
+	Widget.THEMES 				= {
 		Minmatar: 		{ "--primary-color": [0.4662, 0.3118, 0.2241], 	"--secondary-color": [0.0679, 0.0718, 0.0736] },
 		Minmatar2: 		{ "--primary-color": [0.4689, 0.3159, 0.1836], 	"--secondary-color": [0.058, 0.053, 0.0485] },
 		Amarr: 			{ "--primary-color": [0.5882, 0.4529, 0.171], 	"--secondary-color": [0.0061, 0.0049, 0.0045] },
@@ -228,21 +228,23 @@
 		Nebula: 		{ "--primary-color": [0.4186, 0.1506, 0.1171], 	"--secondary-color": [0.0131, 0.0285, 0.0262] }
 	};
 
-	Widget.getRandom 		= () 			=> Math.random().toString().slice(2);
+	Widget.getRandom 			= () 			=> Math.random().toString().slice(2);
 
-	Widget.loadData 		= key 			=> JSON.parse(localStorage.getItem(key));
+	Widget.loadData 			= key 			=> JSON.parse(localStorage.getItem(key));
 
-	Widget.storeData 		= (key, value) 	=> { localStorage.setItem(key, JSON.stringify(value)); return value; };
+	Widget.storeData 			= (key, value) 	=> { localStorage.setItem(key, JSON.stringify(value)); return value; };
 
-	Widget.loadWidgets 		= () 			=> Widget.loadData("widgets") || {};
+	Widget.loadWidgets 			= () 			=> Widget.loadData("widgets") || {};
 
-	Widget.loadWidget 		= widgetID 		=> Widget.loadWidgets()[widgetID];
+	Widget.loadWidget 			= widgetID 		=> Widget.loadWidgets()[widgetID];
 
-	Widget.saveWidget 		= data 			=> { 	Widget.storeData("widgets", ((d) => { let r = Widget.loadData("widgets"); r[d.id] = d; 		return r; })(data)); return data; };
+	Widget.openWidget 			= windowID 		=> remote.require("./main.js").loadWidget(windowID);
 
-	Widget.deleteWidget 	= id 			=> 		Widget.storeData("widgets", ((d) => { let r = Widget.loadData("widgets"); delete r[d]; 		return r; })(id));
+	Widget.saveWidget 			= data 			=> { 	Widget.storeData("widgets", ((d) => { let r = Widget.loadData("widgets"); r[d.id] = d; 		return r; })(data)); return data; };
 
-	Widget.createWidget 	= options 		=> {
+	Widget.deleteWidget 		= id 			=> 		Widget.storeData("widgets", ((d) => { let r = Widget.loadData("widgets"); delete r[d]; 		return r; })(id));
+
+	Widget.createWidget 		= options 		=> {
 		let widgets = Widget.loadWidgets();
 		if(!options.id) {
 			do {
@@ -259,11 +261,11 @@
 		};
 	};
 
-	Widget.getTemplate 		= (title, name) => {
+	Widget.getTemplate 			= (title, name) => {
 		return ($(`#coretemplates > #${title}`) || $(`#templates-${name.replace("/", "_")} > #${title}`)).textContent;
 	};
 
-	Widget.getTheme 		= (id, opacity) => {
+	Widget.getTheme 			= (id, opacity) => {
 		opacity = opacity || 0.5;
 		console.log(id, opacity);
 		var theme = {};
@@ -273,14 +275,16 @@
 		return theme;
 	};
 
-	Widget.getCurrentThemeID = () 			=> Widget.currentThemeID;
-	Widget.getCurrentOpacity = () 			=> Widget.currentOpacity;
-	Widget.getCurrentTheme 	 = () 			=> Widget.getTheme(Widget.currentThemeID, Widget.currentOpacity);
+	Widget.getCurrentThemeID 	= () 			=> Widget.currentThemeID;
+	Widget.getCurrentOpacity 	= () 			=> Widget.currentOpacity;
+	Widget.getCurrentTheme 	 	= () 			=> Widget.getTheme(Widget.currentThemeID, Widget.currentOpacity);
 
-	Widget.loadTheme 		= (id, opacity) => {
+	Widget.loadTheme 			= (id, opacity) => {
 		Widget.currentThemeID 			= id;
 		Widget.currentOpacity 			= opacity;
 		Widget.storeData("theme", { id: id, opacity: opacity });
 		Widget.currentTheme 			= Widget.getTheme(id, opacity);
 		$("#currenttheme").innerHTML 	= Widget.getTemplate("css").format(Widget.currentTheme);
 	};
+
+	Widget.getLogServer 		= () 			=> remote.require("./main.js").logServer;
