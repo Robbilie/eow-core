@@ -24,7 +24,8 @@
 
 		init () {
 			// load default theme for now
-			Widget.loadTheme("Plasma", 0.5);
+			var theme = Widget.loadData("theme");
+			Widget.loadTheme(theme.id, theme.opacity);
 
 			// creates widget tabs & append
 			this.tabs 		= eowTabs({}, []);
@@ -136,7 +137,7 @@
 				this.width = size[0];
 				this.height = size[1];
 				this.isMinimizing = true;
-				this.getWindow().setSize(this.width, 34);
+				this.getWindow().setSize(this.width, 24);
 			}
 			this.isMinimized = !this.isMinimized;
 		}
@@ -279,6 +280,7 @@
 	Widget.loadTheme 		= (id, opacity) => {
 		Widget.currentThemeID 			= id;
 		Widget.currentOpacity 			= opacity;
+		Widget.storeData("theme", { id: id, opacity: opacity });
 		Widget.currentTheme 			= Widget.getTheme(id, opacity);
 		$("#currenttheme").innerHTML 	= Widget.getTemplate("css").format(Widget.currentTheme);
 	};

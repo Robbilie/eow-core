@@ -23,6 +23,12 @@
 			"widget-settings": Widget.createWidget({ id: "widget-settings", plugins: ["Robbilie/eow-settings"] })
 		});
 
+		// set default theme
+		Widget.storeData("theme", {
+			id: "Plasma",
+			opacity: 0.5
+		});
+
 		// set bool
 		Widget.storeData("isInitialized", true);
 	}
@@ -45,6 +51,11 @@
 		console.log("loadPlugin", e, message);
 		Widget.INSTANCE.addPlugin(message.name);
 		Plugin.load(message.name);
+	});
+
+	ipcRenderer.on("loadTheme", (e, message) => {
+		console.log("loadTheme", e, message);
+		Widget.loadTheme(message.theme, message.opacity);
 	});
 
 	ipcRenderer.on("before-quit", (e) => {
