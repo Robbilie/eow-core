@@ -164,3 +164,10 @@
 
 		return base;
 	}
+
+	function eowRange (data) {
+		data.className = (data.className ? data.className + " " : "") + "range";
+		data.type = "range";
+		var base = eowEl("input", data);
+		return base;
+	}

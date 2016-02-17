@@ -22,7 +22,7 @@
 			windows[k].webContents.send("before-quit");
 	}));
 
-	const ls = new LogServer(true);
+	const ls = new LogServer(false);
 	ls.registerListener("data", (socket, packet) => {
 		console.log(JSON.stringify(packet, null, 2));
 

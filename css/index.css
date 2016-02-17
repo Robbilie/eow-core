@@ -158,6 +158,10 @@ input {
     height: 5px;
 }
 
+.fullwidth {
+    width: 100%;
+}
+
 #widgetcontrols > span,
 button,
 .dropdown {
@@ -255,7 +259,7 @@ button, select, details {
     background-color: rgba(0,0,0,.1);
 }
 
-input, button, select, details {
+input, button, select, summary {
     outline: none;
 }
 
@@ -294,4 +298,24 @@ input, button, select, details {
 .dropdown > summary:after {
     content: "\25BC";
     float: right;
+}
+
+.range {
+    -webkit-appearance: none;
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+}
+
+.range:focus {
+    outline: none;
+}
+.range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: ${--primary-color};
 }
