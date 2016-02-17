@@ -80,7 +80,7 @@
 			repo.loadAs("tree", commit.tree, (err, tree) => {
 				repo.loadAs("text", tree["package.json"].hash, (err, fdata) => {
 					let packagedata = JSON.parse(fdata);
-					let localdata = { version: -1 };
+					let localdata = { version: "" };
 					if(fs.existsSync(`./plugins/${name}/package.json`)) localdata = JSON.parse(fs.readFileSync(`./plugins/${name}/package.json`));
 					if(packagedata.version > localdata.version) {
 						console.log("updateing plugin: " + name);
