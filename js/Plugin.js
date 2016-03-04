@@ -36,10 +36,11 @@
 		require('js-git/mixins/formats')(repo);
 
 		repo.readRef("refs/heads/master", (err, hash) => {
-			if(err) {
+			if(err || !hash) {
 				// offline, load from fs
 				Plugin.loadOffline(name);
 			} else {
+				console.log(err, hash);
 				Plugin.loadOnline(name, hash, repo);
 			}
 		});

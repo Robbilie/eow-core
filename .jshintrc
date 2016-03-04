@@ -25,6 +25,14 @@
 		"eowButton": 	true,
 		"Widget": 		true,
 		"Plugin": 		true,
-		"__base": 		true
+		"__base": 		true,
+		"remote": 		true,
+		"eowEl": 		true,
+		"eowTabs": 		true,
+		"eowButton": 	true,
+		"eowTextfield": true,
+		"eowDropdown": 	true,
+		"eowRange": 	true,
+		"AutoComplete": true
 	}
 }

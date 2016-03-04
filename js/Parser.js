@@ -29,7 +29,7 @@
 
 		constructor (msg) {
 
-			var expr 			= lazy("expr", () => alt(none, bool, bytes, integer, string, unicode_string, array, hash, tuple, klass, marshal_stream));
+			var expr 			= lazy("expr", () => alt(none, bool, bytes, float, integer, string, unicode_string, array, hash, tuple, klass, marshal_stream));
 			var exprs 			= lazy("exprs", () => sepBy(expr, regex(/,\s*/)));
 
 			var dc_string 		= seq(str('"'), this.char_parser(regex(/[^"\\]+/)).many(), str('"'));
@@ -44,6 +44,7 @@
 			var payload 		= seq(regex(/LARGE|HUGE|GIANT/), str(" PAYLOAD"), expr).map(x => x.join(""));
 			var bytes 			= alt(seq(regex(/[0-9]+/), str(" bytes")).map(x => x.join("")), payload);
 			var integer 		= alt(seq(regex(/[-]?[0-9]+/), str("L")).map(x => x[0]), regex(/[-]?[0-9]+/)).map(x => parseInt(x));
+			var float 			= regex(/[\-\+]?[0-9]*\.[0-9]+/).map(x => parseFloat(x));
 			var string 			= alt(dc_string, sc_string).map(x => x[1]);
 			var unicode_string 	= alt(dc_unicode_string, sc_unicode_string).map(x => x[1]);
 			var marshal_stream 	= seq(str("<MarshalStream "), string, str(">")).map(x => this.parseMarshal(x[1]));

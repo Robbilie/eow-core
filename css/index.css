@@ -319,3 +319,7 @@ input, button, select, summary {
     border-radius: 50%;
     background-color: ${--primary-color};
 }
+
+.click {
+    cursor: pointer;
+}
