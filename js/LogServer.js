@@ -131,6 +131,16 @@
 								this.distributeMessage("character", socket);
 							}
 
+							if(
+								socket.nextMessage.message[0] &&
+								socket.nextMessage.message[0] == "Packet::SessionChangeNotification"
+							) {
+								if(socket.nextMessage.message[1][3][1][1].charid) {
+									socket.characterID = socket.nextMessage.message[1][3][1][1].charid[1];
+									this.distributeMessage("character", socket);
+								}
+							}
+
 							if(socket.writer)
 								socket.writer.write(JSON.stringify(socket.nextMessage, null, 2));
 							delete socket.nextMessage;

@@ -259,6 +259,10 @@ button, select, details {
     background-color: rgba(0,0,0,.1);
 }
 
+::-webkit-scrollbar-thumb {
+    background-color: ${--primary-color};
+}
+
 input, button, select, summary {
     outline: none;
 }
