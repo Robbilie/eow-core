@@ -9,6 +9,7 @@
 		<script type="text/javascript" src="../js/Plugin.js"></script>
 		<script type="text/javascript" src="../js/index.js"></script>
 		<link rel="stylesheet" type="text/css" href="../css/base.css">
+		<link rel="stylesheet" type="text/css" href="../css/index.css">
 		<style id="currenttheme"></style>
 	</head>
 	<body>
@@ -26,7 +27,7 @@
 			<code id="css"></code>
 			<code id="tab">
 				#tab-${name}:checked ~ nav > label[for="tab-${name}"] { 
-					background-color: ${--primary-color};
+					background-color: var(--primary-color);
 				}
 				#tab-${name}:checked ~ nav > label[for="tab-${name}"]:after {
 				    content: " ";

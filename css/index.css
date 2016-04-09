@@ -8,7 +8,7 @@
     position: relative;
     width: 100%;
     height: 100%;
-    background-color: ${--secondary-color};
+    background-color: var(--secondary-color);
 }
 
 #widget:before {
@@ -27,7 +27,7 @@
     content: " ";
     border-style: solid;
     border-width: 1px;
-    border-color: ${--primary-color};
+    border-color: var(--primary-color);
     -webkit-filter: saturate(30%);
 }
 
@@ -59,7 +59,7 @@
     flex-grow: 1;
     border-top-style: solid;
     border-top-width: 1px;
-    border-top-color: ${--primary-color};
+    border-top-color: var(--primary-color);
 }
 
 .tabs > article > .tab {
@@ -99,7 +99,7 @@
     -webkit-app-region: no-drag;
     color: white;
     -webkit-user-select: none;
-    background-color: ${--secondary-color};
+    background-color: var(--secondary-color);
 }
 
 webview {
@@ -143,10 +143,10 @@ input {
     color: white;
     padding: 4px;
     width: 100%;
-    background-color: ${--primary-color};
+    background-color: var(--primary-color);
     border-width: 1px;
     border-style: solid;
-    border-color: ${--primary-color};
+    border-color: var(--primary-color);
     -webkit-filter: saturate(30%);
 }
 
@@ -185,8 +185,8 @@ button, select, details {
     border-width: 1px;
     overflow: hidden;
     line-height: 14px;
-    background-color: ${--primary-color};
-    border-color: ${--primary-color};
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
 }
 
 #corners {
@@ -260,7 +260,7 @@ button, select, details {
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: ${--primary-color};
+    background-color: var(--primary-color);
 }
 
 input, button, select, summary {
@@ -282,17 +282,17 @@ input, button, select, summary {
     background-color: black;
     border-width: 1px;
     border-style: solid;
-    border-color: ${--secondary-color};
+    border-color: var(--secondary-color);
     z-index: 100;
 }
 
 .dropdown > .ddbody > div {
-    background-color: ${--secondary-color};
+    background-color: var(--secondary-color);
     padding: 3px;
 }
 
 .dropdown > .ddbody > div:hover {
-    background-color: ${--primary-color};
+    background-color: var(--primary-color);
 }
 
 .dropdown > summary::-webkit-details-marker {
@@ -321,7 +321,7 @@ input, button, select, summary {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background-color: ${--primary-color};
+    background-color: var(--primary-color);
 }
 
 .click {

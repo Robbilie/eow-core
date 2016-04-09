@@ -284,7 +284,8 @@
 		Widget.currentOpacity 			= opacity;
 		Widget.storeData("theme", { id: id, opacity: opacity });
 		Widget.currentTheme 			= Widget.getTheme(id, opacity);
-		$("#currenttheme").innerHTML 	= Widget.getTemplate("css").format(Widget.currentTheme);
+		for(var i in Widget.currentTheme)
+			setDocumentVariable(i, Widget.currentTheme[i]);
 	};
 
 	Widget.getLogServer 		= () 			=> remote.require("./main.js").logServer;

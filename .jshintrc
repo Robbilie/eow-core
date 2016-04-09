@@ -33,6 +33,7 @@
 		"eowTextfield": true,
 		"eowDropdown": 	true,
 		"eowRange": 	true,
-		"AutoComplete": true
+		"AutoComplete": true,
+		"setDocumentVariable": true
 	}
 }

@@ -11,6 +11,16 @@
 		});
 	};
 
+	// Auxiliary method. Retrieves and sanitises the value of a custom property.
+	var getVariable = function(styles, propertyName) {
+		return String(styles.getPropertyValue(propertyName)).trim();
+	};
+
+	// Auxiliary method. Sets the value of a custom property at the document level.
+	var setDocumentVariable = function(propertyName, value) {
+		document.documentElement.style.setProperty(propertyName, value);
+	};
+
 	function eowEl (el, data) {
 		var element = typeof el == "string" ? document.createElement(el) : el;
 
@@ -45,14 +55,7 @@
 
 		var createStyle 	= name 			=> {
 			var sty = eowEl("style", { 
-				innerHTML: Widget.getTemplate("tab").format(styleData(name)) 
-			});
-			Object.observe(Widget, (changes) => {
-				changes.forEach(change => {
-					console.log("observed");
-					if(change.name == "currentTheme")
-						sty.innerHTML = Widget.getTemplate("tab").format(styleData(name));
-				});
+				innerHTML: Widget.getTemplate("tab").format({ name: name }) 
 			});
 			return sty;
 		};
