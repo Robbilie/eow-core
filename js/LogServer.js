@@ -1,6 +1,7 @@
 
 	"use strict";
 
+	const EventEmitter = require('events');
 	var net 		= require("net");
 	var fs 			= require("fs");
 	var Message 	= require(__base + "Message");
@@ -27,9 +28,10 @@
 		}
 	});
 
-	class LogServer {
+	class LogServer extends EventEmitter {
 
 		constructor (debug) {
+			super();
 			this.port = 0xcc9;
 			this.clients = [];
 			/*
@@ -46,9 +48,13 @@
 				socket.receivedConnectionMessage = false;
 				this.clients.push(socket);
 
-				this.distributeMessage("connect", socket);
+				this.emit("connect", socket);
 
 				var bufferedData = new Buffer("");
+
+				var emitDelayed = (type, param1, param2) => {
+					this.emit(type, param1, param2);
+				};
 
 				socket.on("data", data => {
 					bufferedData = Buffer.concat([bufferedData, data]);
@@ -84,8 +90,9 @@
 							socket.pid 							= msg.body.pid;
 							socket.machineName 					= msg.body.machine_name;
 							socket.executablePath 				= msg.body.executable_path;
+							socket.settings 					= { characterID: 0 };
 
-							this.distributeMessage("init", socket);
+							this.emit("init", socket);
 
 							if(debug)
 								socket.writer = fs.createWriteStream(`./logs/${socket.pid}.json`);
@@ -99,13 +106,13 @@
 							} else {
 								nextMessage.timestamp = msg.body.timestamp;
 							}
-							nextMessage.pid = socket.pid;
-							nextMessage.severity = msg.body.severity;
-							nextMessage.machineName = socket.machineName;
-							nextMessage.executablePath = socket.executablePath;
-							nextMessage.module = msg.body.module;
-							nextMessage.channel = msg.body.channel;
-							nextMessage.message = msg.body.message;
+							nextMessage.pid 			= socket.pid;
+							nextMessage.severity 		= msg.body.severity;
+							nextMessage.machineName 	= socket.machineName;
+							nextMessage.executablePath 	= socket.executablePath;
+							nextMessage.module 			= msg.body.module;
+							nextMessage.channel 		= msg.body.channel;
+							nextMessage.message 		= msg.body.message;
 
 							socket.nextMessage = nextMessage;
 						}
@@ -116,7 +123,7 @@
 							if(pmsg)
 								socket.nextMessage.message = pmsg;
 
-							this.distributeMessage("data", socket, socket.nextMessage);
+							this.emit("data", socket, socket.nextMessage);
 
 							if(
 								socket.nextMessage.message[0] &&
@@ -127,8 +134,9 @@
 								socket.nextMessage.message[1][3][1].length == 1 &&
 								socket.nextMessage.message[1][3][1][0] == "SelectCharacterID"
 							) {
-								socket.characterID = socket.nextMessage.message[1][3][2][0];
-								this.distributeMessage("character", socket);
+								console.warn("CHARACTER1", socket.nextMessage.message[1][3]);
+								socket.settings.characterID = socket.nextMessage.message[1][3][2][0];
+								emitDelayed("character", socket, socket.nextMessage.message[1][3][2][0]);
 							}
 
 							if(
@@ -136,8 +144,9 @@
 								socket.nextMessage.message[0] == "Packet::SessionChangeNotification"
 							) {
 								if(socket.nextMessage.message[1][3][1][1].charid) {
-									socket.characterID = socket.nextMessage.message[1][3][1][1].charid[1];
-									this.distributeMessage("character", socket);
+									console.warn("CHARACTER2", socket.nextMessage.message[1][3][1][1]);
+									socket.settings.characterID = socket.nextMessage.message[1][3][1][1].charid[1];
+									emitDelayed("character", socket, socket.nextMessage.message[1][3][1][1].charid[1]);
 								}
 							}
 
@@ -150,7 +159,7 @@
 
 				socket.on("end", () => {
 					console.log("disconnect", socket.pid);
-					this.distributeMessage("disconnect", socket);
+					this.emit("disconnect", socket);
 					this.clients.splice(this.clients.indexOf(socket), 1);
 				});
 
@@ -158,7 +167,8 @@
 
 		}
 
-		distributeMessage (type, socket, msg) {
+		/*
+		emit (type, socket, msg) {
 			this.listeners.filter(l => l.type == type).forEach(l => l.listener(socket, msg));
 		}
 
@@ -169,6 +179,7 @@
 		removeListener (type, listener) {
 			this.listeners = this.listeners.filter(l => !(l.type == type && l.listener == listener));
 		}
+		*/
 
 		parseMessage (msg) {
 			if(msg)

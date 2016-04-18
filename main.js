@@ -23,16 +23,11 @@
 	}));
 
 	const ls = new LogServer(true);
-	ls.registerListener("data", (socket, packet) => {
+	ls.on("data", (socket, packet) => {
 		console.log(JSON.stringify(packet, null, 2));
 	});
 
-	exports.logServer = {
-		getClients: 			() 					=> ls.getClients(),
-		getClientByCharacterID: (charID) 			=> ls.getClientByCharacterID(charID),
-		registerListener: 		(type, listener) 	=> ls.registerListener(type, listener),
-		removeListener: 		(type, listener) 	=> ls.removeListener(type, listener),
-	};
+	exports.logServer = ls;
 
 	const windows = {};
 
