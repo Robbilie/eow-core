@@ -5,6 +5,9 @@
 
 		constructor (buffer, encoding) {
 			this.STORAGE = null;
+			this.sharedMapData = null;
+			this.sharedMap = null;
+			this.sharedCount = 0;
 			this.index = 0;
 			this.buffer = null;
 			this.parsed = null;
@@ -18,9 +21,19 @@
 			} else {
 				this.buffer = new Buffer(buffer, encoding);
 			}
-			this.STORAGE 	= [];
-			this.index 		= 5;
-			this.parsed 	= this.parse();
+
+			var sharedSize		= buffer.readUInt32LE(1);
+			var sharedSizeBytes = sharedSize * 4;
+
+			this.sharedMapData	= new ArrayBuffer(sharedSizeBytes);
+			( new Uint8Array(this.sharedMapData) ).set(buffer.slice(buffer.length - sharedSizeBytes));
+
+			this.sharedMap 		= new Uint32Array(this.sharedMapData);
+
+			this.STORAGE 		= [];
+			this.sharedCount 	= 0;
+			this.index 			= 5;
+			this.parsed 		= this.parse();
 		}
 
 		parse () {
@@ -119,7 +132,8 @@
 			}
 
 			if(shared) {
-				this.STORAGE.push(res);
+				this.STORAGE[this.sharedMap[this.sharedCount] - 1] = res;
+				this.sharedCount += 1;
 			}
 			return res;
 		}
