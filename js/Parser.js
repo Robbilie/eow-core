@@ -54,7 +54,7 @@
 
 			var klass_name 		= regex(/\w*(::\w*)*/);
 
-			var array 			= seq(str("["), exprs, str("]")).map(x => x[1]);
+			var array 			= alt(str("[]").map(x => []), seq(str("["), exprs, str("]")).map(x => x[1]));
 			var hash 			= alt(str("{}").map(x => ({})), seq(str("{"), this.elem_parser(hash_pair), str("}")).map(x => this.red(x[1])));
 			var tuple 			= alt(str("(,)").map(x => []), seq(str("("), expr, regex(/\s*,\s*\)/)).map(x => x[1]), seq(str("("), exprs, str(")")).map(x => x[1]));
 			var klass 			= seq(klass_name, str("("), this.elem_parser(klass_pair), str(")")).map(x => [x[0], this.red(x[2])]);
