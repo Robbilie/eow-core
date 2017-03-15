@@ -73,7 +73,10 @@
 				case Marshal.TYPE.UNICODE:
 				case Marshal.TYPE.BUFFER:
 				case Marshal.TYPE.UTF8:
-					res = this.parseString(this.parseIntLE(1)); break;
+					var l = this.parseIntLE(1);
+					if (l == 255)
+						l = this.parseIntLE(4);
+					res = this.parseString(l); break;
 				case Marshal.TYPE.STRING0:
 				case Marshal.TYPE.UNICODE0:
 					res = ""; break;
@@ -141,6 +144,8 @@
 		parseDBRow () {
 			var res = {};
 				res.columns = this.parse();
+			if(!res.columns["(reduce)"])
+				return null;
 			var cols = res.columns["(reduce)"][1][0];
 				//cols = cols.sort((a, b) => { return a[1] > b[1]; });
 				//cols.push(cols.shift());
@@ -200,9 +205,13 @@
 		parseStream () {
 			var tmpind = this.index;
 			var length = this.parseIntLE(1);
-			this.index += 5;
-			var res = { "(marshal)": [] };
-			while(this.index < (tmpind + (length * 2))) res["(marshal)"].push(this.parse());
+			if (length == 255)
+				length = this.parseIntLE(4);
+
+			var res = new Marshal(this.buffer.slice(this.index, this.index + length)).parsed;
+
+			this.index += length;
+
 			return res;
 		}
 
