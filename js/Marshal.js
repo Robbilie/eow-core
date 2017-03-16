@@ -81,8 +81,9 @@
 				case Marshal.TYPE.UNICODE0:
 					res = ""; break;
 				case Marshal.TYPE.STRING1:
-				case Marshal.TYPE.UNICODE1:
 					res = this.parseString(1); break;
+				case Marshal.TYPE.UNICODE1:
+					res = this.parseString(2, "utf16le"); break;
 				case Marshal.TYPE.STRINGR:
 					res = Marshal.stringTable[this.parseIntLE(1)]; break;
 				case Marshal.TYPE.TUPLE:
@@ -178,8 +179,8 @@
 			return num;
 		}
 
-		parseString (l) {
-			var str 	= this.buffer.toString("utf8", this.index, this.index + l);
+		parseString (l, encoding) {
+			var str 	= this.buffer.toString(encoding || "utf8", this.index, this.index + l);
 			this.index += l;
 			return str;
 		}
@@ -194,6 +195,11 @@
 			for(var i = 0; i < l; i++) {
 				var tmp = this.parse();
 				var tmpind = this.parse();
+
+				console.log(typeof tmp, tmp);
+				console.log(typeof tmpind, tmpind);
+				console.log("===");
+
 				if(typeof tmpind != "string" && typeof tmp == "string")
 					data[tmp] = tmpind;
 				else
