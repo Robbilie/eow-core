@@ -196,10 +196,6 @@
 				var tmp = this.parse();
 				var tmpind = this.parse();
 
-				console.log(typeof tmp, tmp);
-				console.log(typeof tmpind, tmpind);
-				console.log("===");
-
 				if(typeof tmpind != "string" && typeof tmp == "string")
 					data[tmp] = tmpind;
 				else
